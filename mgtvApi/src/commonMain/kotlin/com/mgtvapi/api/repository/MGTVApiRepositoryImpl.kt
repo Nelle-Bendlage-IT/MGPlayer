@@ -1,5 +1,6 @@
 package com.mgtvapi.api.repository
 
+import com.mgtvapi.api.model.ClipFileResponse
 import com.mgtvapi.api.model.MainFeedResponse
 import com.mgtvapi.api.service.MGTVApiRemoteService
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,6 @@ class MGTVApiRepositoryImpl(
         if (!tokenManager.email.isNullOrEmpty()) {
             runBlocking {
                 login(tokenManager.email!!, tokenManager.password!!)
-                println("LOGGEDIN AGAIN")
             }
         }
     }
@@ -54,5 +54,20 @@ class MGTVApiRepositoryImpl(
 
     override fun logout() {
         tokenManager.cleanStorage()
+    }
+
+    override suspend fun getClipFiles(clipId: String): ClipFileResponse {
+        try {
+            return apiService.getClipFiles(clipId)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getCookies(): String {
+        val cookies = apiService.getCookies()
+        var cookie = ""
+        cookies.forEach { cookie += "${it.name}=${it.value};" }
+        return cookie
     }
 }

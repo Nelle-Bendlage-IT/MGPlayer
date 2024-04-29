@@ -5,6 +5,8 @@ import com.mgtvapi.api.repository.MGTVApiRepositoryImpl
 import com.mgtvapi.api.repository.TokenManager
 import com.mgtvapi.api.repository.TokenManagerImpl
 import com.mgtvapi.api.service.MGTVApiRemoteService
+import com.mgtvapi.viewModel.CommonViewModel
+import com.mgtvapi.viewModel.HomeViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.cookies.AcceptAllCookiesStorage
@@ -19,6 +21,12 @@ val mgtvApiSharedModule = module {
 
     single<MGTVApiRemoteService> { MGTVApiRemoteService(get()) }
     single<MGTVApiRepository> { MGTVApiRepositoryImpl(get(), get()) }
+    single {
+        HomeViewModel(get())
+    }
+    single {
+        CommonViewModel(get())
+    }
 }
 
 

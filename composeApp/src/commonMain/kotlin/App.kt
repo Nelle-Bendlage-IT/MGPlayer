@@ -20,10 +20,10 @@ fun App() {
         modules(mgtvApiSharedModule)
     }) {
         AppTheme {
-            val tokenManager: TokenManager = koinInject()
-            val authRepo: MGTVApiRepository = koinInject()
 
-            val isLoggedIn by authRepo.isLoggedIn().collectAsState(tokenManager.email != null)
+            val tokenManager: TokenManager = koinInject()
+            val repo: MGTVApiRepository = koinInject()
+            val isLoggedIn by repo.isLoggedIn().collectAsState(tokenManager.email != null)
             if (isLoggedIn) {
                 Navigator(HomeScreen())
             } else {

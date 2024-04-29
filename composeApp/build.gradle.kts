@@ -1,4 +1,4 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
@@ -12,7 +12,7 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -23,12 +23,17 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.media3.ui)
+            implementation(libs.androidx.media3.common)
+            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.session)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -41,11 +46,11 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
+            implementation(libs.voyager.tab.navigator)
             implementation(project(":mgtvApi"))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.image.loader)
-
         }
     }
 }
@@ -72,7 +77,19 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            proguardFiles(
+                // Includes the default ProGuard rules files that are packaged with
+                // the Android Gradle plugin. To learn more, go to the section about
+                // R8 configuration files.
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+
+                // Includes a local, custom Proguard rules file
+                "proguard-rules.pro"
+            )
+
         }
     }
     compileOptions {

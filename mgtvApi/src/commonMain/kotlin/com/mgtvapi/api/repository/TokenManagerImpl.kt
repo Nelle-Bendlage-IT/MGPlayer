@@ -3,7 +3,6 @@ package com.mgtvapi.api.repository
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.coroutines.getBooleanOrNullFlow
 import com.russhwolf.settings.coroutines.getStringOrNullFlow
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
@@ -15,7 +14,6 @@ class TokenManagerImpl() : TokenManager {
     @OptIn(ExperimentalSettingsApi::class)
     override val observableCredentials: Flow<String?>
      get() = observableSettings.getStringOrNullFlow(StorageKeys.EMAIL.key)
-
 
     override var email: String?
         get() = settings[StorageKeys.EMAIL.key]

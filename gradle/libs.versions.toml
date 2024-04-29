@@ -17,7 +17,6 @@ koinCore = "3.4.0"
 kotlin = "1.9.23"
 koinVersion = "3.5.3"
 voyagerVersion = "1.0.0"
-coil = "2.6.0"
 kotlinVersion = "1.9.0"
 kotlinXCoroutinesVersion = "1.8.0"
 ktorVersion = "2.3.10"
@@ -25,7 +24,9 @@ kotlinXDatetimeVersion = "0.5.0"
 multiplatform-settings = "1.1.1"
 koin-compose = "1.1.2"
 androidx-lifecycle = "2.7.0"
-image-loader = "1.7.8"
+kamel-image = "0.9.4"
+media3_version = "1.3.1"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -36,12 +37,18 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3_version" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3_version" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3_version" }
+androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3_version" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyagerVersion" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyagerVersion" }
-# coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyagerVersion" }
+
+
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinXDatetimeVersion" }
 kotlinx-couroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinXCoroutinesVersion" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
@@ -57,7 +64,7 @@ multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", vers
 multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
-image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "image-loader" }
+image-loader = { module = "media.kamel:kamel-image", version.ref = "kamel-image" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
