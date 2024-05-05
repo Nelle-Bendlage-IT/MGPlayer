@@ -101,7 +101,9 @@ data class EpisodeScreen(
                                 VideoPlayer(
                                     modifier = Modifier.fillMaxWidth().height(250.dp),
                                     url = "https:${chosenQuality.value.url}",
-                                    mapOf("cookie" to clipData.cookie)
+                                    cookie = mapOf("cookie" to clipData.cookie),
+                                    playbackArtwork = clip.image,
+                                    playbackTitle = clip.projectTitle
                                 )
                             }
                             DropdownMenu(

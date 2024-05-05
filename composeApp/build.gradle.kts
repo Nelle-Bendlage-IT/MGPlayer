@@ -51,6 +51,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.image.loader)
+            implementation(libs.androidx.lifecycle.viewmodel)
         }
     }
 }

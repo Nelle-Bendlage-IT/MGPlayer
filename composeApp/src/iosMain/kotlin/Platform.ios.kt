@@ -10,73 +10,50 @@ import androidx.compose.ui.interop.UIKitView
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import platform.AVFAudio.AVAudioSession
-import platform.AVFAudio.AVAudioSessionCategoryPlayback
-import platform.AVFAudio.setActive
-import platform.AVFoundation.AVPlayer
-import platform.AVFoundation.AVPlayerItem
-import platform.AVFoundation.AVURLAsset
-import platform.AVFoundation.play
-import platform.AVKit.AVPlayerViewController
-import platform.Foundation.NSURL
-import platform.UIKit.UIDevice
-import platform.UIKit.UIView
-
-class IOSPlatform : Platform {
-    override val name: String =
-        UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
-}
-
-actual fun getPlatform(): Platform = IOSPlatform()
-
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
-actual fun VideoPlayer(modifier: Modifier, url: String, cookie: Map<Any?, *>?) {
-    var avPlayer by remember { mutableStateOf<AVPlayer?>(null) }
-    var avPlayerViewController by remember { mutableStateOf<AVPlayerViewController?>(null) }
-    var uiView by remember { mutableStateOf<UIView?>(null) }
-    val audioSession = AVAudioSession.sharedInstance()
-    val asset = AVURLAsset.URLAssetWithURL(
-        URL = NSURL(string = url),
-        // https://stackoverflow.com/a/78026972
-        options = mapOf("AVURLAssetHTTPHeaderFieldsKey" to cookie)
-    )
-    val playerItem = AVPlayerItem(asset = asset)
+actual fun VideoPlayer(
+    modifier: Modifier, url: String,
+    cookie: Map<Any?, *>?,
+    playbackTitle: String,
+    playbackArtwork: String
+) {
+    var mediaPlayerController by remember { mutableStateOf<MediaPlayerController?>(null) }
+    var currentUrl by remember { mutableStateOf(url) }
 
     LaunchedEffect(Unit) {
-        avPlayer = withContext(Dispatchers.Main) {
-            AVPlayer(playerItem = playerItem)
+        mediaPlayerController = withContext(Dispatchers.Main) {
+            MediaPlayerController(
+                cookie = cookie,
+                playbackTitle = playbackTitle,
+                playbackArtworkUrl = playbackArtwork
+            )
         }
+        mediaPlayerController!!.prepare(url)
+    }
 
-        avPlayerViewController = withContext(Dispatchers.Main) {
-            AVPlayerViewController().apply {
-                player = avPlayer
-                showsPlaybackControls = true
-                entersFullScreenWhenPlaybackBegins = true
-                exitsFullScreenWhenPlaybackEnds = true
-                contentOverlayView?.autoresizesSubviews = true
-            }
-        }
-        uiView = withContext(Dispatchers.Main) {
-            avPlayerViewController?.view
+    LaunchedEffect(url) {
+        if (currentUrl != url) {
+            currentUrl = url
+            mediaPlayerController!!.prepare(url)
         }
     }
 
-    if (avPlayer != null && uiView != null) {
+
+
+    if (mediaPlayerController != null && mediaPlayerController?.view != null) {
         UIKitView(
             modifier = modifier,
             factory = {
-                uiView!!
+                mediaPlayerController!!.view
             },
             interactive = true,
             background = Color.Gray,
-            update = {
-                avPlayer?.play()
-                avPlayerViewController?.player!!.play()
-                audioSession.setCategory(AVAudioSessionCategoryPlayback, null)
-                audioSession.setActive(true, null)
-            },
+            update = {},
+            onRelease = {
+                mediaPlayerController!!.stop()
+            }
         )
     }
 }
