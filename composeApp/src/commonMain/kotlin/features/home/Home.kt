@@ -34,6 +34,7 @@ fun Home(
     val lazyColumnListState = rememberLazyListState()
     var lastCalledIndex by remember { mutableStateOf<Int?>(null) }
     val navigator = LocalNavigator.currentOrThrow
+
     LaunchedEffect(lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index) {
         val lastIndex = lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
         if (lastIndex != lastCalledIndex) {

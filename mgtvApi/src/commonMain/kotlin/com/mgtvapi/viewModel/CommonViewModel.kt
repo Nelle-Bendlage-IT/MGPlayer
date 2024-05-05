@@ -1,10 +1,16 @@
 package com.mgtvapi.viewModel
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.mgtvapi.api.model.ClipFile
 import com.mgtvapi.api.repository.MGTVApiRepository
 import com.mgtvapi.domain.ResultState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 
 data class ClipData(
@@ -12,18 +18,22 @@ data class ClipData(
     val clipFiles: List<ClipFile>
 )
 
-class CommonViewModel(private val repo: MGTVApiRepository) : KoinComponent {
+class CommonViewModel(private val repo: MGTVApiRepository) : KoinComponent, ViewModel() {
     private var _clipData = MutableStateFlow<ResultState<ClipData>>(ResultState.Empty)
     val clipData = _clipData.asStateFlow()
-    suspend fun getClipFiles(clipId: String) {
-        try {
-            _clipData.value = ResultState.Loading
-            val cookies = repo.getCookies()
-            val result = repo.getClipFiles(clipId)
-            _clipData.value =
-                ResultState.Success(ClipData(cookie = cookies, clipFiles = result.files))
-        } catch (e: Exception) {
-            _clipData.value = ResultState.Error("${e.message}")
+    fun getClipFiles(clipId: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    _clipData.value = ResultState.Loading
+                    val cookies = repo.getCookies()
+                    val result = repo.getClipFiles(clipId)
+                    _clipData.value =
+                        ResultState.Success(ClipData(cookie = cookies, clipFiles = result.files))
+                } catch (e: Exception) {
+                    _clipData.value = ResultState.Error("${e.message}")
+                }
+            }
         }
     }
 }
