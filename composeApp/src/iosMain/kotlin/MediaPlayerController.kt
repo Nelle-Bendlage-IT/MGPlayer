@@ -1,6 +1,5 @@
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -15,23 +14,16 @@ import platform.AVFoundation.AVMetadataCommonIdentifierTitle
 import platform.AVFoundation.AVMutableMetadataItem
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
-import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
 import platform.AVFoundation.AVURLAsset
-import platform.AVFoundation.addPeriodicTimeObserverForInterval
 import platform.AVFoundation.currentItem
-import platform.AVFoundation.isPlaybackLikelyToKeepUp
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
-import platform.AVFoundation.removeTimeObserver
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
 import platform.AVKit.AVPlayerViewController
 import platform.AVKit.setExternalMetadata
-import platform.CoreMedia.CMTime
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.Foundation.NSData
-import platform.Foundation.NSNotificationCenter
-import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.dataWithContentsOfURL
@@ -44,7 +36,6 @@ class MediaPlayerController(
     private val playbackTitle: String,
     private val cookie: Map<Any?, *>?,
 ) : ViewModel() {
-    private lateinit var timeObserver: Any
 
     private val avPlayer: AVPlayer = AVPlayer()
     private val avPlayerViewController: AVPlayerViewController = AVPlayerViewController()
@@ -83,7 +74,6 @@ class MediaPlayerController(
             }
         }
         stop()
-        startObserving()
         avPlayer.replaceCurrentItemWithPlayerItem(playerItem)
         avPlayer.play()
     }
@@ -121,32 +111,8 @@ class MediaPlayerController(
         }
     }
 
-    private val observer: (CValue<CMTime>) -> Unit = { time: CValue<CMTime> ->
-        if (avPlayer.currentItem?.isPlaybackLikelyToKeepUp() == true) {
-            // TODO: Handle time updates
-        }
-    }
-
-    @OptIn(ExperimentalForeignApi::class)
-    private fun startObserving() {
-        val interval = CMTimeMakeWithSeconds(1.0, NSEC_PER_SEC.toInt())
-        timeObserver = avPlayer.addPeriodicTimeObserverForInterval(
-            interval,
-            null,
-            observer
-        )
-        NSNotificationCenter.defaultCenter.addObserverForName(
-            name = AVPlayerItemDidPlayToEndTimeNotification,
-            `object` = avPlayer.currentItem,
-            queue = NSOperationQueue.mainQueue,
-            usingBlock = {}
-        )
-    }
-
-
     @OptIn(ExperimentalForeignApi::class)
     fun stop() {
-        if (::timeObserver.isInitialized) avPlayer.removeTimeObserver(timeObserver)
         avPlayer.pause()
         avPlayer.currentItem?.seekToTime(CMTimeMakeWithSeconds(0.0, NSEC_PER_SEC.toInt()))
     }
