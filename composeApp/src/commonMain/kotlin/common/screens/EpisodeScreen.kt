@@ -1,7 +1,5 @@
 package common.screens
 
-import Parcelable
-import Parcelize
 import VideoPlayer
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
@@ -40,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.mgtvapi.Parcelable
+import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.ClipFile
 import com.mgtvapi.domain.ResultState

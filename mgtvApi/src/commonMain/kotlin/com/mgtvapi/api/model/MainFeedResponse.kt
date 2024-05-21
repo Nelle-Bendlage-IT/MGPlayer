@@ -1,5 +1,7 @@
 package com.mgtvapi.api.model
 
+import com.mgtvapi.Parcelable
+import com.mgtvapi.Parcelize
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,6 +11,7 @@ data class MainFeedResponse(
 )
 
 @Serializable
+@Parcelize
 data class Clip(
     val id: String,
     val magazineId: Long,
@@ -25,36 +28,31 @@ data class Clip(
     val description: String,
     val shortDescription: String,
     val duration: String,
-    //val next: Any,
+    // val next: Any,
     val chapterSections: List<ChapterSection>,
     val participants: List<Participant>,
     val teaserFile: String?,
-)
+) : Parcelable
 
 @Serializable
-data class NextEpisode(
-    val id: String,
-    val enum: Int,
-)
-
-@Serializable
+@Parcelize
 data class ChapterSection(
     val title: String,
     val chapters: List<Chapter>,
-)
+) : Parcelable
 
 @Serializable
+@Parcelize
 data class Chapter(
     val title: String,
     val start: Long,
     val end: Long,
-)
-
-
+) : Parcelable
 
 @Serializable
+@Parcelize
 data class Participant(
     val id: String,
     val name: String,
     val img: String,
-)
+) : Parcelable

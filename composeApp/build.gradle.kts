@@ -2,6 +2,10 @@
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler) // apply false
+    id("kotlin-parcelize") // add this
+    id("kotlin-kapt") // add this
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 kotlin {
@@ -9,6 +13,11 @@ kotlin {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "11"
+                freeCompilerArgs =
+                    listOf(
+                        "-P",
+                        "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.mgtvapi.Parcelize",
+                    )
             }
         }
     }
@@ -16,7 +25,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -33,7 +42,6 @@ kotlin {
             implementation(libs.androidx.media3.common)
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.session)
-
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -86,11 +94,9 @@ android {
                 // the Android Gradle plugin. To learn more, go to the section about
                 // R8 configuration files.
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-
                 // Includes a local, custom Proguard rules file
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
-
         }
     }
     compileOptions {
@@ -101,4 +107,3 @@ android {
         debugImplementation(libs.compose.ui.tooling)
     }
 }
-
