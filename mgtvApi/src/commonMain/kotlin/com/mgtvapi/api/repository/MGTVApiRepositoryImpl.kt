@@ -1,24 +1,21 @@
 package com.mgtvapi.api.repository
 
+import co.touchlab.kermit.Logger
 import com.mgtvapi.api.model.ClipFileResponse
 import com.mgtvapi.api.model.MainFeedResponse
 import com.mgtvapi.api.service.MGTVApiRemoteService
+import com.mgtvapi.api.util.Exceptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
-
 
 class MGTVApiRepositoryImpl(
     private val apiService: MGTVApiRemoteService,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
 ) :
     MGTVApiRepository {
-
-    init {
+    override suspend fun init() {
         if (!tokenManager.email.isNullOrEmpty()) {
-            runBlocking {
-                login(tokenManager.email!!, tokenManager.password!!)
-            }
+            login(tokenManager.email!!, tokenManager.password!!)
         }
     }
 
@@ -26,7 +23,10 @@ class MGTVApiRepositoryImpl(
         return tokenManager.observableCredentials.map { it != null }
     }
 
-    override suspend fun login(email: String, password: String): Boolean {
+    override suspend fun login(
+        email: String,
+        password: String,
+    ): Boolean {
         try {
             val result = apiService.login(email, password)
             if (result) {
@@ -34,21 +34,20 @@ class MGTVApiRepositoryImpl(
             }
             return result
         } catch (e: Exception) {
-            //Napier.e(tag = "MGTVApiRepositoryImpl.login", message = "LOGIN_FAILED", throwable = e)
-            throw e
+            Logger.e("LOGIN", e)
+            throw Exceptions.LoginException(e.message)
         }
     }
 
-    override suspend fun getMainFeed(offset: Int, count: Int): MainFeedResponse {
-        try {
-            return apiService.getMainFeed(offset, count)
+    override suspend fun getMainFeed(
+        offset: Int,
+        count: Int,
+    ): MainFeedResponse {
+        return try {
+            apiService.getMainFeed(offset, count)
         } catch (e: Exception) {
-            /* Napier.e(
-                 tag = "MGTVApiRepositoryImpl.getMainFeed",
-                 message = "FAILED_TO_FETCH_MAIN_FEED",
-                 throwable = e
-             )*/
-            throw e
+            Logger.e("GETMAINFEED", e)
+            throw Exceptions.UnknownErrorException(e.message)
         }
     }
 
@@ -60,7 +59,8 @@ class MGTVApiRepositoryImpl(
         try {
             return apiService.getClipFiles(clipId)
         } catch (e: Exception) {
-            throw e
+            Logger.e("GETCLIPFILES", e)
+            throw Exceptions.UnknownErrorException(e.message)
         }
     }
 
