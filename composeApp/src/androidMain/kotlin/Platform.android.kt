@@ -36,8 +36,6 @@ import androidx.media3.ui.PlayerView.SHOW_BUFFERING_ALWAYS
 import com.mgtv.MainActivity
 import java.util.UUID
 
-actual typealias Parcelize = kotlinx.parcelize.Parcelize
-actual typealias Parcelable = android.os.Parcelable
 
 sealed class ZoomState {
     data object ZoomedIn : ZoomState()
@@ -185,13 +183,12 @@ fun Context.setScreenOrientation(orientation: Int) {
 fun Context.hideSystemUi() {
     val activity = this.getActivity() ?: return
     val window = activity.window ?: return
-    WindowCompat.setDecorFitsSystemWindows(window, false)
     val windowsInsetsController =
         WindowCompat.getInsetsController(window, activity.window.decorView)
     windowsInsetsController.apply {
         systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        hide(WindowInsetsCompat.Type.systemBars())
+        hide(WindowInsetsCompat.Type.navigationBars())
     }
     activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
