@@ -1,9 +1,12 @@
 package common.screens
 
+import Parcelable
+import Parcelize
 import VideoPlayer
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -46,12 +49,15 @@ import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+@Parcelize
 data class EpisodeScreen(
     val clip: Clip,
-) : Screen {
+) : Screen, Parcelable {
     @Composable
     override fun Content() {
         val commonViewModel = koinInject<CommonViewModel>()
@@ -60,7 +66,7 @@ data class EpisodeScreen(
         val navigator = LocalNavigator.currentOrThrow
 
         LaunchedEffect(Unit) {
-            scope.launch {
+            scope.launch(Dispatchers.IO) {
                 commonViewModel.getClipFiles(clipId = clip.id)
             }
         }
@@ -68,20 +74,18 @@ data class EpisodeScreen(
             MGTopAppBar(onBackPressed = { navigator.pop() }, showBackButton = true)
         }) {
             when (clipDataState.value) {
-                ResultState.Empty -> MGCircularProgressIndicator()
-                is ResultState.Error -> MGCircularProgressIndicator()
-                ResultState.Loading -> MGCircularProgressIndicator()
+                is ResultState.Error, ResultState.Loading, ResultState.Empty -> MGCircularProgressIndicator()
                 is ResultState.Success -> {
                     val clipData =
                         (clipDataState.value as ResultState.Success<ClipData>).data
                     val clipFiles = clipData.clipFiles
                     val clipFile = clipFiles.first()
                     val startPlaying = remember { mutableStateOf(false) }
-                    var chosenQuality = remember { mutableStateOf(clipFile) }
+                    val chosenQuality = remember { mutableStateOf(clipFile) }
                     LazyColumn(modifier = Modifier.padding(it)) {
                         item {
-                            if (!startPlaying.value) {
-                                Box {
+                            Box(Modifier.height(250.dp)) {
+                                if (!startPlaying.value) {
                                     KamelImage(
                                         resource = asyncPainterResource(data = clip.image),
                                         contentDescription = clip.title,
@@ -93,22 +97,23 @@ data class EpisodeScreen(
                                         Icon(
                                             imageVector = Icons.Filled.PlayCircle,
                                             contentDescription = "play-button",
-                                            modifier = Modifier.size(50.dp)
+                                            modifier = Modifier.size(50.dp),
                                         )
                                     }, modifier = Modifier.align(Alignment.Center))
+                                } else {
+                                    VideoPlayer(
+                                        modifier = Modifier.fillMaxSize(),
+                                        url = chosenQuality.value.url.toUrl(),
+                                        cookie = mapOf("cookie" to clipData.cookie),
+                                        playbackArtwork = clip.image,
+                                        playbackTitle = clip.projectTitle,
+                                    )
                                 }
-                            } else {
-                                VideoPlayer(
-                                    modifier = Modifier.fillMaxWidth().height(250.dp),
-                                    url = "https:${chosenQuality.value.url}",
-                                    cookie = mapOf("cookie" to clipData.cookie),
-                                    playbackArtwork = clip.image,
-                                    playbackTitle = clip.projectTitle
-                                )
                             }
                             DropdownMenu(
                                 clipFiles,
-                                onChanged = { chosenClip -> chosenQuality.value = chosenClip })
+                                onChanged = { chosenClip -> chosenQuality.value = chosenClip },
+                            )
                             Spacer(Modifier.height(10.dp))
                             Text(clip.projectTitle, style = MaterialTheme.typography.headlineSmall)
                             Spacer(Modifier.height(5.dp))
@@ -116,19 +121,19 @@ data class EpisodeScreen(
                             Spacer(Modifier.height(2.5.dp))
                             Text(clip.description)
                         }
-
                     }
                 }
             }
-
         }
-
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenu(options: List<ClipFile>, onChanged: (clipFile: ClipFile) -> Unit) {
+private fun DropdownMenu(
+    options: List<ClipFile>,
+    onChanged: (clipFile: ClipFile) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf(options[0].desc) }
 
@@ -155,7 +160,7 @@ fun DropdownMenu(options: List<ClipFile>, onChanged: (clipFile: ClipFile) -> Uni
                     text = {
                         Text(
                             option.desc,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     },
                     onClick = {
@@ -168,4 +173,8 @@ fun DropdownMenu(options: List<ClipFile>, onChanged: (clipFile: ClipFile) -> Uni
             }
         }
     }
+}
+
+fun String.toUrl(): String {
+    return "https:$this"
 }
