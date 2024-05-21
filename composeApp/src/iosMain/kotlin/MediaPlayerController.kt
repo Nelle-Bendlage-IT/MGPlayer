@@ -4,7 +4,6 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import platform.AVFAudio.AVAudioSession
 import platform.AVFAudio.AVAudioSessionCategoryPlayback
 import platform.AVFAudio.setActive
@@ -36,7 +35,6 @@ class MediaPlayerController(
     private val playbackTitle: String,
     private val cookie: Map<Any?, *>?,
 ) : ViewModel() {
-
     private val avPlayer: AVPlayer = AVPlayer()
     private val avPlayerViewController: AVPlayerViewController = AVPlayerViewController()
 
@@ -59,19 +57,17 @@ class MediaPlayerController(
         }
 
     fun prepare(url: String) {
-        val asset = AVURLAsset.URLAssetWithURL(
-            URL = NSURL(string = url),
-            // https://stackoverflow.com/a/78026972
-            options = mapOf("AVURLAssetHTTPHeaderFieldsKey" to cookie)
-        )
+        val asset =
+            AVURLAsset.URLAssetWithURL(
+                URL = NSURL(string = url),
+                // https://stackoverflow.com/a/78026972
+                options = mapOf("AVURLAssetHTTPHeaderFieldsKey" to cookie),
+            )
         val playerItem = AVPlayerItem(asset = asset)
-        view
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                playerItem.setExternalMetadata(
-                    setupMetadata()
-                )
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            playerItem.setExternalMetadata(
+                setupMetadata(),
+            )
         }
         stop()
         avPlayer.replaceCurrentItemWithPlayerItem(playerItem)
@@ -116,5 +112,4 @@ class MediaPlayerController(
         avPlayer.pause()
         avPlayer.currentItem?.seekToTime(CMTimeMakeWithSeconds(0.0, NSEC_PER_SEC.toInt()))
     }
-
 }
