@@ -188,7 +188,7 @@ fun Context.hideSystemUi() {
     windowsInsetsController.apply {
         systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        hide(WindowInsetsCompat.Type.navigationBars())
+        hide(WindowInsetsCompat.Type.systemBars())
     }
     activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
