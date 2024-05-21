@@ -15,20 +15,20 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
-val mgtvApiSharedModule = module {
-    single<HttpClient> { provideHttpClient() }
-    single<TokenManager> { TokenManagerImpl() }
+val mgtvApiSharedModule =
+    module {
+        single<HttpClient> { provideHttpClient() }
+        single<TokenManager> { TokenManagerImpl() }
 
-    single<MGTVApiRemoteService> { MGTVApiRemoteService(get()) }
-    single<MGTVApiRepository> { MGTVApiRepositoryImpl(get(), get()) }
-    single {
-        HomeViewModel(get())
+        single<MGTVApiRemoteService> { MGTVApiRemoteService(get()) }
+        single<MGTVApiRepository> { MGTVApiRepositoryImpl(get(), get()) }
+        single {
+            HomeViewModel(get())
+        }
+        single {
+            CommonViewModel(get())
+        }
     }
-    single {
-        CommonViewModel(get())
-    }
-}
-
 
 private fun provideHttpClient(): HttpClient {
     return HttpClient {
@@ -36,10 +36,12 @@ private fun provideHttpClient(): HttpClient {
             storage = AcceptAllCookiesStorage()
         }
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                useAlternativeNames = false
-            })
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                    useAlternativeNames = false
+                },
+            )
         }
     }
 }

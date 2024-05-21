@@ -52,29 +52,26 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.mgtvapi.api.repository.MGTVApiRepository
-import com.mgtvapi.api.repository.MGTVApiRepositoryImpl
 import kotlinx.coroutines.launch
 import massengeschmacktv.composeapp.generated.resources.Res
 import massengeschmacktv.composeapp.generated.resources.email
 import massengeschmacktv.composeapp.generated.resources.login_submit
 import massengeschmacktv.composeapp.generated.resources.mgtvlogo
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 class LoginScreen() : Screen {
-
     @Composable
     override fun Content() {
         var loading by rememberSaveable { mutableStateOf(false) }
-        // var error by rememberSaveable { mutableStateOf<AuthError?>(null) }
         var email by rememberSaveable { mutableStateOf("") }
         var password by rememberSaveable { mutableStateOf("") }
-        val isSubmitEnabled = remember(email, password, loading) {
-            !loading && (email.isNotBlank() && password.isNotBlank())
-        }
+        val isSubmitEnabled =
+            remember(email, password, loading) {
+                !loading && (email.isNotBlank() && password.isNotBlank())
+            }
         val repo: MGTVApiRepository = koinInject()
         val scope = rememberCoroutineScope()
 
@@ -96,14 +93,12 @@ class LoginScreen() : Screen {
                         println(result)
                         loading = false
                     }
-                }
+                },
             )
         }
     }
-
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Preview
 @Composable
 fun LoginContent(
@@ -114,25 +109,24 @@ fun LoginContent(
     password: String,
     loading: Boolean,
     isSubmitEnabled: Boolean,
-
-    ) {
+) {
     val focusManager by rememberUpdatedState(LocalFocusManager.current)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-
-        ) {
+    ) {
         Image(
             painter = painterResource(Res.drawable.mgtvlogo),
             contentDescription = "logo",
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
         )
 
         Spacer(modifier = Modifier.padding(16.dp))
@@ -142,14 +136,14 @@ fun LoginContent(
             loading = loading,
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }
+            },
         )
         Spacer(modifier = Modifier.padding(4.dp))
         PasswordTextField(
             password = password,
             onPasswordChange = onPasswordChange,
             loading = loading,
-            onDone = { focusManager.clearFocus() }
+            onDone = { focusManager.clearFocus() },
         )
         Spacer(modifier = Modifier.padding(8.dp))
         Button(
@@ -165,32 +159,35 @@ fun LoginContent(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EmailTextField(
     email: String,
     onEmailChange: (value: String) -> Unit,
     loading: Boolean,
-    onNext: () -> Unit = {}
+    onNext: () -> Unit = {},
 ) {
     TextField(
         value = email,
         onValueChange = onEmailChange,
         label = { Text(text = stringResource(Res.string.email)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .autofill(
-                autofillTypes = listOf(AutofillType.EmailAddress),
-                onFill = onEmailChange
-            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .autofill(
+                    autofillTypes = listOf(AutofillType.EmailAddress),
+                    onFill = onEmailChange,
+                ),
         singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Next
-        ),
-        keyboardActions = KeyboardActions(
-            onNext = { onNext() },
-        ),
-        enabled = !loading
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Next,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onNext = { onNext() },
+            ),
+        enabled = !loading,
     )
 }
 
@@ -224,7 +221,7 @@ fun PasswordTextField(
     password: String,
     onPasswordChange: (value: String) -> Unit,
     loading: Boolean,
-    onDone: () -> Unit = {}
+    onDone: () -> Unit = {},
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
@@ -232,21 +229,24 @@ fun PasswordTextField(
         value = password,
         onValueChange = onPasswordChange,
         label = { Text(text = "Password") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .autofill(
-                autofillTypes = listOf(AutofillType.Password),
-                onFill = onPasswordChange
-            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .autofill(
+                    autofillTypes = listOf(AutofillType.Password),
+                    onFill = onPasswordChange,
+                ),
         singleLine = true,
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = { onDone() },
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = { onDone() },
+            ),
         trailingIcon = {
             IconButton(onClick = {
                 if (!loading) passwordVisibility = !passwordVisibility
@@ -257,6 +257,6 @@ fun PasswordTextField(
                 )
             }
         },
-        enabled = !loading
+        enabled = !loading,
     )
 }

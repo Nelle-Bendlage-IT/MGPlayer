@@ -10,39 +10,53 @@ import io.ktor.client.request.get
 import io.ktor.http.Cookie
 import io.ktor.http.parameters
 
-private const val baseUrl: String = "https://massengeschmack.tv"
-
-
 class MGTVApiRemoteService(
-    private val client: HttpClient
+    private val client: HttpClient,
 ) {
-    suspend fun login(email: String, password: String): Boolean {
-        val data = client.submitForm("$baseUrl/index_login.php", formParameters = parameters {
-            append("email", email)
-            append("password", password)
-        })
+    companion object {
+        private const val BASE_URL: String = "https://massengeschmack.tv"
+    }
+
+    suspend fun login(
+        email: String,
+        password: String,
+    ): Boolean {
+        val data =
+            client.submitForm(
+                "$BASE_URL/index_login.php",
+                formParameters =
+                    parameters {
+                        append("email", email)
+                        append("password", password)
+                    },
+            )
         // Believe it or not:
         // If you're credentials are wrong you're still getting status code 200
         // except of the set-cookie header. That's why I have to check the header
         return data.headers.contains("set-cookie")
     }
 
-    suspend fun getMainFeed(offset: Int, count: Int): MainFeedResponse {
-        val data = client.get("$baseUrl/api/v2/feed/main") {
-            url {
-                parameters.append("offset", "$offset")
-                parameters.append("count", "$count")
+    suspend fun getMainFeed(
+        offset: Int,
+        count: Int,
+    ): MainFeedResponse {
+        val data =
+            client.get("$BASE_URL/api/v2/feed/main") {
+                url {
+                    parameters.append("offset", "$offset")
+                    parameters.append("count", "$count")
+                }
             }
-        }
         return data.body<MainFeedResponse>()
     }
 
     suspend fun getClipFiles(clipId: String): ClipFileResponse {
-        val data = client.get("$baseUrl/api/v2/downloads/$clipId")
+        val data = client.get("$BASE_URL/api/v2/downloads/$clipId")
 
         return data.body<ClipFileResponse>()
     }
-     suspend fun getCookies(): List<Cookie> {
-        return client.cookies(baseUrl)
+
+    suspend fun getCookies(): List<Cookie> {
+        return client.cookies(BASE_URL)
     }
 }

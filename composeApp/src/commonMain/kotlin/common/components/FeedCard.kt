@@ -20,13 +20,17 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 
 @Composable
-fun ClipCard(clip: Clip, onClick: () -> Unit) {
+fun ClipCard(
+    clip: Clip,
+    onClick: () -> Unit,
+) {
     Card(
         Modifier.fillMaxWidth().clickable { onClick() },
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 10.dp,
+            ),
     ) {
         KamelImage(
             resource = asyncPainterResource(data = clip.image),
@@ -38,15 +42,16 @@ fun ClipCard(clip: Clip, onClick: () -> Unit) {
         Text(
             clip.projectTitle,
             modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            style =
+                MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                ),
         )
         Text(
             clip.shortDescription,
             modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

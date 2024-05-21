@@ -15,12 +15,10 @@ import theme.AppTheme
 @Composable
 @Preview
 fun App() {
-
     KoinApplication(application = {
         modules(mgtvApiSharedModule)
     }) {
         AppTheme {
-
             val tokenManager: TokenManager = koinInject()
             val repo: MGTVApiRepository = koinInject()
             val isLoggedIn by repo.isLoggedIn().collectAsState(tokenManager.email != null)
@@ -31,5 +29,4 @@ fun App() {
             }
         }
     }
-
 }

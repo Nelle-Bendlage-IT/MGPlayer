@@ -13,7 +13,7 @@ class TokenManagerImpl() : TokenManager {
     private val observableSettings: ObservableSettings by lazy { settings as ObservableSettings }
     @OptIn(ExperimentalSettingsApi::class)
     override val observableCredentials: Flow<String?>
-     get() = observableSettings.getStringOrNullFlow(StorageKeys.EMAIL.key)
+        get() = observableSettings.getStringOrNullFlow(StorageKeys.EMAIL.key)
 
     override var email: String?
         get() = settings[StorageKeys.EMAIL.key]
