@@ -2,8 +2,10 @@ package common.screens
 
 import VideoPlayer
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,12 +33,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.mgtvapi.Parcelable
+import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.ClipFile
 import com.mgtvapi.domain.ResultState
@@ -44,14 +49,18 @@ import com.mgtvapi.viewModel.ClipData
 import com.mgtvapi.viewModel.CommonViewModel
 import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
+import getPlatform
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+@Parcelize
 data class EpisodeScreen(
     val clip: Clip,
-) : Screen {
+) : Screen, Parcelable {
     @Composable
     override fun Content() {
         val commonViewModel = koinInject<CommonViewModel>()
@@ -60,7 +69,7 @@ data class EpisodeScreen(
         val navigator = LocalNavigator.currentOrThrow
 
         LaunchedEffect(Unit) {
-            scope.launch {
+            scope.launch(Dispatchers.IO) {
                 commonViewModel.getClipFiles(clipId = clip.id)
             }
         }
@@ -68,20 +77,19 @@ data class EpisodeScreen(
             MGTopAppBar(onBackPressed = { navigator.pop() }, showBackButton = true)
         }) {
             when (clipDataState.value) {
-                ResultState.Empty -> MGCircularProgressIndicator()
-                is ResultState.Error -> MGCircularProgressIndicator()
-                ResultState.Loading -> MGCircularProgressIndicator()
+                is ResultState.Error, ResultState.Loading, ResultState.Empty -> MGCircularProgressIndicator()
                 is ResultState.Success -> {
                     val clipData =
                         (clipDataState.value as ResultState.Success<ClipData>).data
                     val clipFiles = clipData.clipFiles
                     val clipFile = clipFiles.first()
+                    val chosenQuality = remember { mutableStateOf(clipFile) }
                     val startPlaying = remember { mutableStateOf(false) }
-                    var chosenQuality = remember { mutableStateOf(clipFile) }
+
                     LazyColumn(modifier = Modifier.padding(it)) {
                         item {
-                            if (!startPlaying.value) {
-                                Box {
+                            Box(Modifier.height(250.dp)) {
+                                if (!startPlaying.value) {
                                     KamelImage(
                                         resource = asyncPainterResource(data = clip.image),
                                         contentDescription = clip.title,
@@ -93,42 +101,63 @@ data class EpisodeScreen(
                                         Icon(
                                             imageVector = Icons.Filled.PlayCircle,
                                             contentDescription = "play-button",
-                                            modifier = Modifier.size(50.dp)
+                                            modifier = Modifier.size(50.dp),
                                         )
                                     }, modifier = Modifier.align(Alignment.Center))
+                                } else {
+                                    if (getPlatform().name == "Android") {
+                                        navigator.push(PlayerScreen {
+                                            VideoPlayer(
+                                                modifier = Modifier.fillMaxSize(),
+                                                url = chosenQuality.value.url.toUrl(),
+                                                cookie = mapOf("cookie" to clipData.cookie),
+                                                playbackArtwork = clip.image,
+                                                playbackTitle = clip.projectTitle,
+                                            )
+                                        })
+                                    } else {
+                                        VideoPlayer(
+                                            modifier = Modifier.fillMaxSize(),
+                                            url = chosenQuality.value.url.toUrl(),
+                                            cookie = mapOf("cookie" to clipData.cookie),
+                                            playbackArtwork = clip.image,
+                                            playbackTitle = clip.projectTitle,
+                                        )
+                                    }
                                 }
-                            } else {
-                                VideoPlayer(
-                                    modifier = Modifier.fillMaxWidth().height(250.dp),
-                                    url = "https:${chosenQuality.value.url}",
-                                    cookie = mapOf("cookie" to clipData.cookie),
-                                    playbackArtwork = clip.image,
-                                    playbackTitle = clip.projectTitle
-                                )
                             }
                             DropdownMenu(
                                 clipFiles,
-                                onChanged = { chosenClip -> chosenQuality.value = chosenClip })
+                                onChanged = { chosenClip -> chosenQuality.value = chosenClip },
+                            )
                             Spacer(Modifier.height(10.dp))
-                            Text(clip.projectTitle, style = MaterialTheme.typography.headlineSmall)
+                            Text(
+                                clip.projectTitle,
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.padding(8.dp)
+                            )
                             Spacer(Modifier.height(5.dp))
-                            Text(clip.title, fontWeight = FontWeight.Bold)
+                            Text(
+                                clip.title,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(8.dp)
+                            )
                             Spacer(Modifier.height(2.5.dp))
-                            Text(clip.description)
+                            Text(clip.description, modifier = Modifier.padding(8.dp))
                         }
-
                     }
                 }
             }
-
         }
-
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenu(options: List<ClipFile>, onChanged: (clipFile: ClipFile) -> Unit) {
+private fun DropdownMenu(
+    options: List<ClipFile>,
+    onChanged: (clipFile: ClipFile) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf(options[0].desc) }
 
@@ -155,7 +184,7 @@ fun DropdownMenu(options: List<ClipFile>, onChanged: (clipFile: ClipFile) -> Uni
                     text = {
                         Text(
                             option.desc,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     },
                     onClick = {
@@ -166,6 +195,23 @@ fun DropdownMenu(options: List<ClipFile>, onChanged: (clipFile: ClipFile) -> Uni
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                 )
             }
+        }
+    }
+}
+
+fun String.toUrl(): String {
+    return "https:$this"
+}
+
+@Parcelize
+private data class PlayerScreen(
+    val child: @Composable() () -> Unit
+) : Screen, Parcelable {
+
+    @Composable
+    override fun Content() {
+        Box(Modifier.background(Color.Black)) {
+            child()
         }
     }
 }

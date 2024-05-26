@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    kotlin("plugin.serialization") version "1.9.23"
+    kotlin("plugin.serialization") version "2.0.0"
     alias(libs.plugins.kotlinCocoapods)
+    id("kotlin-parcelize")
 }
 
 kotlin {
@@ -10,6 +11,11 @@ kotlin {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
+                freeCompilerArgs =
+                    listOf(
+                        "-P",
+                        "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.mgtvapi.Parcelize",
+                    )
             }
         }
     }
@@ -31,7 +37,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            //put your multiplatform dependencies here
+            // put your multiplatform dependencies here
             implementation(libs.kotlinx.couroutines.core)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
@@ -43,6 +49,7 @@ kotlin {
             implementation(libs.multiplatform.settings.coroutines)
             implementation(libs.multiplatform.settings)
             implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -50,7 +57,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
         }
-       iosMain.dependencies {
+        iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
     }

@@ -18,15 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import massengeschmacktv.composeapp.generated.resources.Res
 import massengeschmacktv.composeapp.generated.resources.mgtvlogo
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MGTopAppBar(showBackButton: Boolean, onBackPressed: () -> Unit) {
+fun MGTopAppBar(
+    showBackButton: Boolean,
+    onBackPressed: () -> Unit,
+) {
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors =
+        TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
@@ -35,7 +38,7 @@ fun MGTopAppBar(showBackButton: Boolean, onBackPressed: () -> Unit) {
                 IconButton(onClick = onBackPressed, content = {
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "back icon"
+                        contentDescription = "back icon",
                     )
                 })
             }
@@ -43,16 +46,16 @@ fun MGTopAppBar(showBackButton: Boolean, onBackPressed: () -> Unit) {
         title = {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.mgtvlogo),
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(75.dp)
+                    modifier =
+                    Modifier
+                        .size(75.dp),
                 )
             }
-
-        }
+        },
     )
 }

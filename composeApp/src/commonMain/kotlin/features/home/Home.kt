@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,15 +20,15 @@ import common.components.ClipCard
 import common.components.MGCircularProgressIndicator
 import common.screens.EpisodeScreen
 
+private const val PAGINATION_THRESHOLD = 12
 
 @Composable
 fun Home(
-    uiState:
-    State<ResultState<List<Clip>>>,
-    paginationState: State<ResultState<Boolean>>,
+    mainFeedClipsState: ResultState<List<Clip>>,
+    mainFeedClipsPaginationState: ResultState<Boolean>,
     getMainFeedClipsPagination: (offset: Int) -> Unit,
     getMainFeedClips: (offset: Int, count: Int) -> Unit,
-    isInitial: State<Boolean>,
+    isInitial: Boolean,
 ) {
     val lazyColumnListState = rememberLazyListState()
     var lastCalledIndex by remember { mutableStateOf<Int?>(null) }
@@ -38,7 +37,7 @@ fun Home(
     LaunchedEffect(lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index) {
         val lastIndex = lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
         if (lastIndex != lastCalledIndex) {
-            if (!isInitial.value && lazyColumnListState.layoutInfo.totalItemsCount - 12 < lastIndex!!) {
+            if (!isInitial && lazyColumnListState.layoutInfo.totalItemsCount - PAGINATION_THRESHOLD < lastIndex!!) {
                 getMainFeedClipsPagination(lazyColumnListState.layoutInfo.totalItemsCount)
                 lastCalledIndex = lastIndex
             }
@@ -46,45 +45,40 @@ fun Home(
     }
 
     LaunchedEffect(Unit) {
-        if (isInitial.value) {
+        if (isInitial) {
             getMainFeedClips(0, 20)
         }
     }
 
-    when (uiState.value) {
+    when (mainFeedClipsState) {
         is ResultState.Loading, is ResultState.Empty -> {
             MGCircularProgressIndicator()
         }
 
-        is ResultState.Success<List<Clip>> -> {
+        is ResultState.Success -> {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 state = lazyColumnListState,
             ) {
-                items(
-                    (uiState.value as ResultState.Success<List<Clip>>).data,
-                    key = { it.id }) {
+                items(mainFeedClipsState.data, key = { it.id }) { clip ->
                     ClipCard(
-                        clip = it,
+                        clip = clip,
                         onClick = {
-                            navigator.push(
-                                EpisodeScreen(
-                                    clip = it,
-                                )
-                            )
-                        })
+                            navigator.push(EpisodeScreen(clip = clip))
+                        },
+                    )
                 }
-
                 item(key = "paginationState") {
-                    when (paginationState.value) {
+                    when (mainFeedClipsPaginationState) {
                         is ResultState.Loading -> {
                             MGCircularProgressIndicator()
                         }
 
-                        is ResultState.Success, is ResultState.Empty -> {}
                         is ResultState.Error -> {
-                            Text((paginationState.value as ResultState.Error).message)
+                            Text(mainFeedClipsPaginationState.message)
                         }
+
+                        else -> {}
                     }
                 }
             }
@@ -93,8 +87,5 @@ fun Home(
         is ResultState.Error -> {
             Text("ERROR")
         }
-
     }
-
 }
-

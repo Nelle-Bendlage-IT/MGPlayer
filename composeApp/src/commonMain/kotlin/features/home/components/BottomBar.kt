@@ -20,60 +20,59 @@ data class TopLevelDestination(
     val route: HomeRoute,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val iconText: String
+    val iconText: String,
 )
 
-private val TOP_LEVEL_DESTINATIONS = listOf(
-    TopLevelDestination(
-        HomeRoute.Home,
-        Icons.Filled.Home,
-        Icons.Outlined.Home,
-        "Home"
-    ),
-    TopLevelDestination(
-        HomeRoute.Tv,
-        Icons.Filled.Tv,
-        Icons.Outlined.Tv,
-        "Tv"
-    ),
-    TopLevelDestination(
-        HomeRoute.Settings,
-        Icons.Filled.Settings,
-        Icons.Outlined.Settings,
-        "Einstellungen"
+private val TOP_LEVEL_DESTINATIONS =
+    listOf(
+        TopLevelDestination(
+            HomeRoute.Home,
+            Icons.Filled.Home,
+            Icons.Outlined.Home,
+            "Home",
+        ),
+        TopLevelDestination(
+            HomeRoute.Tv,
+            Icons.Filled.Tv,
+            Icons.Outlined.Tv,
+            "Tv",
+        ),
+        TopLevelDestination(
+            HomeRoute.Settings,
+            Icons.Filled.Settings,
+            Icons.Outlined.Settings,
+            "Einstellungen",
+        ),
     )
-)
 
 @Composable
 fun BottomBar(
     currentRoute: HomeRoute = HomeRoute.Home,
-    onRouteSelected: (HomeRoute) -> Unit = {}
+    onRouteSelected: (HomeRoute) -> Unit = {},
 ) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.primary,
     ) {
-
         TOP_LEVEL_DESTINATIONS.forEach { destination ->
             val isSelected = destination.route == currentRoute
             NavigationBarItem(
                 icon = {
                     Crossfade(
                         targetState = isSelected,
-                        label = destination.iconText
+                        label = destination.iconText,
                     ) { selected ->
                         Icon(
                             imageVector = if (selected) destination.selectedIcon else destination.unselectedIcon,
-                            contentDescription = destination.iconText
+                            contentDescription = destination.iconText,
                         )
                     }
                 },
                 selected = isSelected,
                 onClick = {
                     onRouteSelected(destination.route)
-                }
+                },
             )
         }
     }
 }
-

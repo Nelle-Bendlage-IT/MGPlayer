@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ClipFileResponse(
     val ok: Boolean,
-    val progress: Progress,
-    val files: List<ClipFile>,
+    val progress: Progress? = null,
+    val files: List<ClipFile> = listOf(),
 )
 
 @Serializable
