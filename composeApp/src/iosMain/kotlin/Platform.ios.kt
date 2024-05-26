@@ -12,6 +12,12 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+class IOSPlatform : Platform {
+    override val name: String = "Apple"
+}
+
+actual fun getPlatform(): Platform = IOSPlatform()
+
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable

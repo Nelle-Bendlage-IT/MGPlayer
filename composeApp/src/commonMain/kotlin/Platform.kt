@@ -10,3 +10,9 @@ expect fun VideoPlayer(
     playbackTitle: String,
     playbackArtwork: String
 )
+
+interface Platform {
+    val name: String
+}
+
+expect fun getPlatform(): Platform

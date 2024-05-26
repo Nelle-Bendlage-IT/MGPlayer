@@ -2,6 +2,7 @@ package common.screens
 
 import VideoPlayer
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,6 +49,7 @@ import com.mgtvapi.viewModel.ClipData
 import com.mgtvapi.viewModel.CommonViewModel
 import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
+import getPlatform
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.Dispatchers
@@ -80,8 +83,9 @@ data class EpisodeScreen(
                         (clipDataState.value as ResultState.Success<ClipData>).data
                     val clipFiles = clipData.clipFiles
                     val clipFile = clipFiles.first()
-                    val startPlaying = remember { mutableStateOf(false) }
                     val chosenQuality = remember { mutableStateOf(clipFile) }
+                    val startPlaying = remember { mutableStateOf(false) }
+
                     LazyColumn(modifier = Modifier.padding(it)) {
                         item {
                             Box(Modifier.height(250.dp)) {
@@ -101,13 +105,25 @@ data class EpisodeScreen(
                                         )
                                     }, modifier = Modifier.align(Alignment.Center))
                                 } else {
-                                    VideoPlayer(
-                                        modifier = Modifier.fillMaxSize(),
-                                        url = chosenQuality.value.url.toUrl(),
-                                        cookie = mapOf("cookie" to clipData.cookie),
-                                        playbackArtwork = clip.image,
-                                        playbackTitle = clip.projectTitle,
-                                    )
+                                    if (getPlatform().name == "Android") {
+                                        navigator.push(PlayerScreen {
+                                            VideoPlayer(
+                                                modifier = Modifier.fillMaxSize(),
+                                                url = chosenQuality.value.url.toUrl(),
+                                                cookie = mapOf("cookie" to clipData.cookie),
+                                                playbackArtwork = clip.image,
+                                                playbackTitle = clip.projectTitle,
+                                            )
+                                        })
+                                    } else {
+                                        VideoPlayer(
+                                            modifier = Modifier.fillMaxSize(),
+                                            url = chosenQuality.value.url.toUrl(),
+                                            cookie = mapOf("cookie" to clipData.cookie),
+                                            playbackArtwork = clip.image,
+                                            playbackTitle = clip.projectTitle,
+                                        )
+                                    }
                                 }
                             }
                             DropdownMenu(
@@ -115,11 +131,19 @@ data class EpisodeScreen(
                                 onChanged = { chosenClip -> chosenQuality.value = chosenClip },
                             )
                             Spacer(Modifier.height(10.dp))
-                            Text(clip.projectTitle, style = MaterialTheme.typography.headlineSmall)
+                            Text(
+                                clip.projectTitle,
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.padding(8.dp)
+                            )
                             Spacer(Modifier.height(5.dp))
-                            Text(clip.title, fontWeight = FontWeight.Bold)
+                            Text(
+                                clip.title,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(8.dp)
+                            )
                             Spacer(Modifier.height(2.5.dp))
-                            Text(clip.description)
+                            Text(clip.description, modifier = Modifier.padding(8.dp))
                         }
                     }
                 }
@@ -177,4 +201,17 @@ private fun DropdownMenu(
 
 fun String.toUrl(): String {
     return "https:$this"
+}
+
+@Parcelize
+private data class PlayerScreen(
+    val child: @Composable() () -> Unit
+) : Screen, Parcelable {
+
+    @Composable
+    override fun Content() {
+        Box(Modifier.background(Color.Black)) {
+            child()
+        }
+    }
 }
