@@ -13,12 +13,12 @@ androidx-test-junit = "1.1.5"
 compose = "1.6.7"
 compose-plugin = "1.6.10"
 junit = "4.13.2"
-kotlin = "2.0.0-RC3"
+kotlin = "2.0.0"
 koinVersion = "3.5.4"
 voyagerVersion = "1.0.0"
-kotlinVersion = "2.0.0-RC3"
+kotlinVersion = "2.0.0"
 kotlinXCoroutinesVersion = "1.8.0"
-ktorVersion = "2.3.10"
+ktorVersion = "2.3.11"
 kotlinXDatetimeVersion = "0.5.0"
 multiplatform-settings = "1.1.1"
 koin-compose = "1.1.2"
@@ -38,7 +38,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-compose = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-compose = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3_version" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3_version" }
 androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3_version" }
