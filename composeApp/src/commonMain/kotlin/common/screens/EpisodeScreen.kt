@@ -14,65 +14,54 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayCircle
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffectOnce
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mgtvapi.Parcelable
 import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
-import com.mgtvapi.api.model.ClipFile
 import com.mgtvapi.domain.ResultState
 import com.mgtvapi.viewModel.ClipData
 import com.mgtvapi.viewModel.CommonViewModel
+import common.components.DropdownMenu
 import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
 import getPlatform
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Parcelize
 data class EpisodeScreen(
     val clip: Clip,
 ) : Screen, Parcelable {
+    @OptIn(ExperimentalVoyagerApi::class)
     @Composable
     override fun Content() {
         val commonViewModel = koinInject<CommonViewModel>()
-        val scope = rememberCoroutineScope()
         val clipDataState = commonViewModel.clipData.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
-        LaunchedEffect(Unit) {
-            scope.launch(Dispatchers.IO) {
-                commonViewModel.getClipFiles(clipId = clip.id)
-            }
+        LifecycleEffectOnce {
+            commonViewModel.getClipFiles(clipId = clip.id)
         }
+
         Scaffold(topBar = {
             MGTopAppBar(onBackPressed = { navigator.pop() }, showBackButton = true)
         }) {
@@ -152,52 +141,6 @@ data class EpisodeScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DropdownMenu(
-    options: List<ClipFile>,
-    onChanged: (clipFile: ClipFile) -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(options[0].desc) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = it },
-    ) {
-        TextField(
-            modifier = Modifier.menuAnchor(),
-            value = text,
-            onValueChange = {},
-            readOnly = true,
-            singleLine = true,
-            label = { Text("Quality") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            option.desc,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    },
-                    onClick = {
-                        onChanged(option)
-                        text = option.desc
-                        expanded = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
-            }
-        }
-    }
-}
 
 fun String.toUrl(): String {
     return "https:$this"

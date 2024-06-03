@@ -2,6 +2,8 @@ package com.mgtvapi.api.repository
 
 import co.touchlab.kermit.Logger
 import com.mgtvapi.api.model.ClipFileResponse
+import com.mgtvapi.api.model.MagazineResponse
+import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
 import com.mgtvapi.api.service.MGTVApiRemoteService
 import com.mgtvapi.api.util.Exceptions
@@ -69,5 +71,23 @@ class MGTVApiRepositoryImpl(
         var cookie = ""
         cookies.forEach { cookie += "${it.name}=${it.value};" }
         return cookie
+    }
+
+    override suspend fun getMagazines(): MagazinesResponse {
+        return try {
+            apiService.getMagazines()
+        } catch (e: Exception) {
+            Logger.e("GETMAGAZINES", e)
+            throw Exceptions.UnknownErrorException(e.message)
+        }
+    }
+
+    override suspend fun getMagazine(magazineID: String, limit: Int): MagazineResponse {
+        return try {
+            apiService.getMagazine(magazineID, limit)
+        } catch (e: Exception) {
+            Logger.e("GETMAGAZINE", e)
+            throw Exceptions.UnknownErrorException(e.message)
+        }
     }
 }

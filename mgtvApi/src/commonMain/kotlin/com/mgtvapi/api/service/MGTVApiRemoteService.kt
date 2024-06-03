@@ -1,6 +1,8 @@
 package com.mgtvapi.api.service
 
 import com.mgtvapi.api.model.ClipFileResponse
+import com.mgtvapi.api.model.MagazineResponse
+import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -25,10 +27,10 @@ class MGTVApiRemoteService(
             client.submitForm(
                 "$BASE_URL/index_login.php",
                 formParameters =
-                    parameters {
-                        append("email", email)
-                        append("password", password)
-                    },
+                parameters {
+                    append("email", email)
+                    append("password", password)
+                },
             )
         // Believe it or not:
         // If you're credentials are wrong you're still getting status code 200
@@ -58,5 +60,21 @@ class MGTVApiRemoteService(
 
     suspend fun getCookies(): List<Cookie> {
         return client.cookies(BASE_URL)
+    }
+
+    suspend fun getMagazines(): MagazinesResponse {
+        val data = client.get("$BASE_URL/api/v2/magazine")
+
+        return data.body<MagazinesResponse>()
+    }
+
+    suspend fun getMagazine(magazineID: String, limit: Int): MagazineResponse {
+        val data = client.get("$BASE_URL/api/v1/?action=getFeed") {
+            url {
+                parameters.append("from", "[$magazineID]")
+                parameters.append("limit", "$limit")
+            }
+        }
+        return data.body<MagazineResponse>()
     }
 }

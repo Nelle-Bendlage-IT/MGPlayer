@@ -56,4 +56,10 @@ class HomeViewModel(private val repo: MGTVApiRepository) : ViewModel() {
             }
         }
     }
+
+    fun logout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.logout()
+        }
+    }
 }

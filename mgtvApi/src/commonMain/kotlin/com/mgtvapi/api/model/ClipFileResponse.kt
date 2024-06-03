@@ -26,4 +26,9 @@ data class ClipFile(
     val dimensions: String? = null,
     val desc: String,
     val url: String,
-)
+) : ListableClip<ClipFile>() {
+    override val magazineName: String
+        get() = desc
+
+    override fun getSelf() = this
+}

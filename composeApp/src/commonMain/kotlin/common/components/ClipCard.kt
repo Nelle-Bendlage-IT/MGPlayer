@@ -14,44 +14,47 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.mgtvapi.api.model.Clip
+import com.mgtvapi.api.model.PlayableClip
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 
 @Composable
 fun ClipCard(
-    clip: Clip,
+    clip: PlayableClip,
     onClick: () -> Unit,
 ) {
     Card(
-        Modifier.fillMaxWidth().clickable { onClick() },
+        Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
         shape = RoundedCornerShape(8.dp),
         elevation =
-            CardDefaults.cardElevation(
-                defaultElevation = 10.dp,
-            ),
+        CardDefaults.cardElevation(
+            defaultElevation = 10.dp,
+        ),
     ) {
         KamelImage(
-            resource = asyncPainterResource(data = clip.image),
-            contentDescription = clip.title,
-            modifier = Modifier.height(175.dp).fillMaxWidth(),
+            resource = asyncPainterResource(data = clip.artworkUrl),
+            contentDescription = clip.episodeTitle,
+            modifier = Modifier.height(175.dp).fillMaxWidth().clickable { onClick() },
             contentScale = ContentScale.Crop,
             animationSpec = tween(),
         )
         Text(
-            clip.projectTitle,
+            clip.episodeTitle,
             modifier = Modifier.padding(8.dp),
             style =
-                MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                ),
+            MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+            ),
         )
         Text(
-            clip.shortDescription,
+            clip.summary,
             modifier = Modifier.padding(8.dp),
             style = MaterialTheme.typography.bodyMedium,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

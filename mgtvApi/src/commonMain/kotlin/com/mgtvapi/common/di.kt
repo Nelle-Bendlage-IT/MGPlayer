@@ -7,7 +7,9 @@ import com.mgtvapi.api.repository.TokenManagerImpl
 import com.mgtvapi.api.service.MGTVApiRemoteService
 import com.mgtvapi.viewModel.CommonViewModel
 import com.mgtvapi.viewModel.HomeViewModel
+import com.mgtvapi.viewModel.MagazineOverviewViewModel
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.cookies.AcceptAllCookiesStorage
 import io.ktor.client.plugins.cookies.HttpCookies
@@ -28,6 +30,9 @@ val mgtvApiSharedModule =
         single {
             CommonViewModel(get())
         }
+        single {
+            MagazineOverviewViewModel(get())
+        }
     }
 
 private fun provideHttpClient(): HttpClient {
@@ -35,6 +40,7 @@ private fun provideHttpClient(): HttpClient {
         install(HttpCookies) {
             storage = AcceptAllCookiesStorage()
         }
+        install(HttpCache)
         install(ContentNegotiation) {
             json(
                 Json {

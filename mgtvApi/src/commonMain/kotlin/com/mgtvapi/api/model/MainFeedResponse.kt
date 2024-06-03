@@ -32,7 +32,18 @@ data class Clip(
     val chapterSections: List<ChapterSection>,
     val participants: List<Participant>,
     val teaserFile: String?,
-) : Parcelable
+) : Parcelable, PlayableClip() {
+    override val episodeTitle: String
+        get() = title
+    override val artworkUrl: String
+        get() = image
+    override val summary
+        get() = shortDescription
+    override val clipID: String
+        get() = id
+    override val magazineTitle: String
+        get() = projectTitle
+}
 
 @Serializable
 @Parcelize
