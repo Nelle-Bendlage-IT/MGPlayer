@@ -5,7 +5,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.mgtvapi.api.repository.MGTVApiRepository
 import com.mgtvapi.api.repository.TokenManager
 import com.mgtvapi.common.mgtvApiSharedModule
-import features.home.HomeScreen
+import features.home.HomeLayout
 import features.login.LoginScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
@@ -23,7 +23,7 @@ fun App() {
             val repo: MGTVApiRepository = koinInject()
             val isLoggedIn by repo.isLoggedIn().collectAsState(tokenManager.email != null)
             if (isLoggedIn) {
-                Navigator(HomeScreen())
+                Navigator(HomeLayout())
             } else {
                 Navigator(LoginScreen())
             }
