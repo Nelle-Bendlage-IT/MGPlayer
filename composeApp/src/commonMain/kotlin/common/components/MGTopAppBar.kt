@@ -37,7 +37,7 @@ fun MGTopAppBar(
             if (showBackButton) {
                 IconButton(onClick = onBackPressed, content = {
                     Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
+                        imageVector = Icons.Filled.ArrowBackIosNew,
                         contentDescription = "back icon",
                     )
                 })

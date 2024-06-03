@@ -128,7 +128,6 @@ actual fun VideoPlayer(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 PlayerView(context).apply {
-                    setExtraAdGroupMarkers()
                     useController = true
                     player = exoPlayer
                     playerView = this
