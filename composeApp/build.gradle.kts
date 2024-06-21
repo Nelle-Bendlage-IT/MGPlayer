@@ -58,8 +58,11 @@ kotlin {
             implementation(project(":mgtvApi"))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-            implementation(libs.image.loader)
             implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
+            implementation(libs.coil.network.ktor)
         }
     }
 }

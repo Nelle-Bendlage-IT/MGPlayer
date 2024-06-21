@@ -1,6 +1,5 @@
 package common.components
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,9 +15,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.mgtvapi.api.model.PlayableClip
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 
 @Composable
 fun ClipCard(
@@ -33,12 +31,11 @@ fun ClipCard(
             defaultElevation = 10.dp,
         ),
     ) {
-        KamelImage(
-            resource = asyncPainterResource(data = clip.artworkUrl),
+        AsyncImage(
+            model = clip.artworkUrl,
             contentDescription = clip.episodeTitle,
             modifier = Modifier.height(175.dp).fillMaxWidth().clickable { onClick() },
             contentScale = ContentScale.Crop,
-            animationSpec = tween(),
         )
         Text(
             clip.episodeTitle,

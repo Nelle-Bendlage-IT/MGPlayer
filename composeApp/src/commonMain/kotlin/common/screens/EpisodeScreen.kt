@@ -1,7 +1,6 @@
 package common.screens
 
 import VideoPlayer
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +32,7 @@ import cafe.adriel.voyager.core.lifecycle.LifecycleEffectOnce
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import coil3.compose.AsyncImage
 import com.mgtvapi.Parcelable
 import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
@@ -43,8 +43,6 @@ import common.components.DropdownMenu
 import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
 import getPlatform
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import org.koin.compose.koinInject
 
 @Parcelize
@@ -79,12 +77,11 @@ data class EpisodeScreen(
                         item {
                             Box(Modifier.height(250.dp)) {
                                 if (!startPlaying.value) {
-                                    KamelImage(
-                                        resource = asyncPainterResource(data = clip.image),
+                                    AsyncImage(
+                                        model = clip.image,
                                         contentDescription = clip.title,
                                         modifier = Modifier.fillMaxWidth().height(250.dp),
                                         contentScale = ContentScale.Crop,
-                                        animationSpec = tween(),
                                     )
                                     IconButton(onClick = { startPlaying.value = true }, content = {
                                         Icon(

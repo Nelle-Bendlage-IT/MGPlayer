@@ -29,5 +29,5 @@ interface MGTVApiRepository {
 
     suspend fun getMagazines(): MagazinesResponse
 
-    suspend fun getMagazine(magazineID: String, limit: Int): MagazineResponse
+    suspend fun getMagazine(magazineID: String, limit: Int, offset: Int): MagazineResponse
 }

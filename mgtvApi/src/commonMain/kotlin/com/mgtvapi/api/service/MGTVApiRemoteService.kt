@@ -68,11 +68,12 @@ class MGTVApiRemoteService(
         return data.body<MagazinesResponse>()
     }
 
-    suspend fun getMagazine(magazineID: String, limit: Int): MagazineResponse {
-        val data = client.get("$BASE_URL/api/v1/?action=getFeed") {
+    suspend fun getMagazine(magazineID: String, count: Int, offset: Int): MagazineResponse {
+        val data = client.get("$BASE_URL/api/v2/feed/filter") {
             url {
-                parameters.append("from", "[$magazineID]")
-                parameters.append("limit", "$limit")
+                parameters.append("offset", "$offset")
+                parameters.append("count", "$count")
+                parameters.append("filter", "{\"mag\":{\"$magazineID\":[]}}")
             }
         }
         return data.body<MagazineResponse>()

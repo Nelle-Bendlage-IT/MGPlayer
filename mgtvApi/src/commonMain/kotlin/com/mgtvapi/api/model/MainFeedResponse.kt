@@ -26,7 +26,7 @@ data class Clip(
     val categoryTitle: String?,
     val image: String,
     val description: String,
-    val shortDescription: String,
+    val shortDescription: String? = "",
     val duration: String,
     // val next: Any,
     val chapterSections: List<ChapterSection>,
@@ -38,7 +38,7 @@ data class Clip(
     override val artworkUrl: String
         get() = image
     override val summary
-        get() = shortDescription
+        get() = if (shortDescription.isNullOrEmpty()) "" else shortDescription
     override val clipID: String
         get() = id
     override val magazineTitle: String

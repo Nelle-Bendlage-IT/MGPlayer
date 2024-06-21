@@ -62,14 +62,8 @@ class HomeLayout : Screen {
                         )
 
                     HomeRoute.Tv -> MagazineOverview(
-                        fetchMagazine = { magazineID: String, limit: Int ->
-                            magazineOverviewViewModel.fetchMagazine(
-                                magazineID,
-                                limit
-                            )
-                        },
-                        magazineEpisodes = magazineOverviewViewModel.magazineEpisodes.collectAsState().value,
-                        magazines = magazineOverviewViewModel.magazines.collectAsState().value
+                        magazines = magazineOverviewViewModel.magazines.collectAsState().value,
+                        fetchMagazines = { magazineOverviewViewModel.fetchMagazines() }
                     )
 
                     HomeRoute.Settings -> Settings(
