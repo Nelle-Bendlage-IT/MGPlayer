@@ -23,10 +23,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
       - name: Build release apk
-        run: ./gradlew :composeApp:assembleRelease && ls *
+        run: ./gradlew :composeApp:assembleRelease
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release
-          path: composeApp/release/composeApp-release.apk
+          path: composeApp/build/release/composeApp-release.apk
 
