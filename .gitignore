@@ -18,3 +18,4 @@ captures
 .fleet/
 .kotlin/
 composeApp/release/
+release/

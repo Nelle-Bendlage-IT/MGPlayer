@@ -1,4 +1,6 @@
-﻿plugins {
+﻿import java.util.Properties
+
+plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
@@ -66,7 +68,13 @@ kotlin {
         }
     }
 }
-
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { input ->
+        localProperties.load(input)
+    }
+}
 android {
     namespace = "com.mgtv"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -87,11 +95,20 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("$rootDir/release/release.keystore")
+            storePassword = localProperties.getProperty("androidReleaseStorePassword")
+            keyAlias = "mgtv"
+            keyPassword = localProperties.getProperty("androidReleaseKeyPassword")
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-
             proguardFiles(
                 // Includes the default ProGuard rules files that are packaged with
                 // the Android Gradle plugin. To learn more, go to the section about
@@ -100,8 +117,10 @@ android {
                 // Includes a local, custom Proguard rules file
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
