@@ -22,11 +22,31 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Retrieve the keystore and decode it to a file
+        env:
+          ANDROID_RELEASE_KEYSTORE_FILE: ${{ secrets.ANDROID_RELEASE_KEYSTORE_FILE }}
+        run: |
+          mkdir keys
+          echo $ANDROID_RELEASE_KEYSTORE_FILE | base64 --decode > keys/release.keystore
+        
+      - name: Write local.properties
+        env:
+          ANDROID_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD }}
+          ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
+          ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+        run: |
+          echo androidReleaseStoreFile=/release/release.keystore >> local.properties
+          echo androidReleaseStorePassword=$ANDROID_RELEASE_KEYSTORE_PASSWORD >> local.properties
+          echo androidReleaseKeyAlias=$ANDROID_RELEASE_KEY_ALIAS >> local.properties
+          echo androidReleaseKeyPassword=$ANDROID_RELEASE_KEY_PASSWORD >> local.properties
+  
       - name: Build release apk
         run: ./gradlew :composeApp:assembleRelease
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release
-          path: composeApp/build/release/composeApp-release.apk
+          path: composeApp/build/outputs/apk/release/composeApp-release-unsigned.apk
 
