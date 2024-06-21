@@ -43,10 +43,10 @@ jobs:
           echo androidReleaseKeyPassword=$ANDROID_RELEASE_KEY_PASSWORD >> local.properties
   
       - name: Build release apk
-        run: ./gradlew :composeApp:assembleRelease
+        run: ./gradlew --no-daemon :composeApp:assembleRelease
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release.apk
-          path: composeApp/build/outputs/apk/release/composeApp-release-unsigned.apk
+          path: composeApp/build/outputs/apk/release/composeApp-release.apk
 
