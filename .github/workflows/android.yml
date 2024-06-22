@@ -63,3 +63,4 @@ jobs:
           token: ${{ github.token }}
           artifacts: "composeApp/build/outputs/apk/release/composeApp-release.apk"
           generateReleaseNotes: true
+          tag: ${{ steps.semver.outputs.next }}
