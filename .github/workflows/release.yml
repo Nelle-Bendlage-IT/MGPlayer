@@ -19,7 +19,7 @@ jobs:
         with:
           token: ${{ github.token }}
           branch: master
-          patchList: "refactor, fix, style, chore"
+          patchList: "refactor, fix, style, chore, perf"
       - name: set up JDK 21
         uses: actions/setup-java@v4
         with:
