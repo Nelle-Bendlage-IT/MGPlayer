@@ -112,10 +112,13 @@ data class EpisodeScreen(
                                     }
                                 }
                             }
-                            DropdownMenu(
-                                clipFiles,
-                                onChanged = { chosenClip -> chosenQuality.value = chosenClip },
-                            )
+                            if (clipFiles.size > 1)
+                                DropdownMenu(
+                                    clipFiles,
+                                    onChanged = { chosenClip -> chosenQuality.value = chosenClip },
+                                )
+
+
                             Spacer(Modifier.height(10.dp))
                             Text(
                                 clip.projectTitle,
