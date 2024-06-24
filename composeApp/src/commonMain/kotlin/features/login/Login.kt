@@ -52,6 +52,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.mgtvapi.api.repository.MGTVApiRepository
+import common.components.MGCircularProgressIndicator
 import kotlinx.coroutines.launch
 import massengeschmacktv.composeapp.generated.resources.Res
 import massengeschmacktv.composeapp.generated.resources.email
@@ -88,9 +89,7 @@ class LoginScreen() : Screen {
                 onSubmit = {
                     scope.launch {
                         loading = true
-                        val result =
                             repo.login(email = email, password = password)
-                        println(result)
                         loading = false
                     }
                 },
@@ -154,7 +153,11 @@ fun LoginContent(
             modifier = Modifier.fillMaxWidth(),
             enabled = isSubmitEnabled,
         ) {
-            Text(text = stringResource(resource = Res.string.login_submit))
+            if (!loading){
+                Text(text = stringResource(resource = Res.string.login_submit))
+            } else {
+                MGCircularProgressIndicator()
+            }
         }
     }
 }
