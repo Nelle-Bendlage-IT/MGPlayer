@@ -8,7 +8,8 @@ expect fun VideoPlayer(
     url: String,
     cookie: Map<Any?, *>?,
     playbackTitle: String,
-    playbackArtwork: String
+    playbackArtwork: String,
+    onVideoIsPlayingTask: (progress: Int) -> Unit,
 )
 
 interface Platform {

@@ -2,6 +2,7 @@ package com.mgtvapi.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import com.mgtvapi.api.model.ClipFile
 import com.mgtvapi.api.repository.MGTVApiRepository
 import com.mgtvapi.domain.ResultState
@@ -32,6 +33,16 @@ class CommonViewModel(private val repo: MGTVApiRepository) : KoinComponent, View
                     ResultState.Success(ClipData(cookie = cookies, clipFiles = result.files))
             } catch (e: Exception) {
                 _clipData.value = ResultState.Error("${e.message}")
+            }
+        }
+    }
+
+    fun updateClipProgress(clipId: String, progress: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repo.updateClipProgress(clipId, progress)
+            } catch (e: Exception) {
+                Logger.e("${e.message}")
             }
         }
     }

@@ -99,6 +99,12 @@ data class EpisodeScreen(
                                                 cookie = mapOf("cookie" to clipData.cookie),
                                                 playbackArtwork = clip.image,
                                                 playbackTitle = clip.projectTitle,
+                                                onVideoIsPlayingTask = { progress ->
+                                                    commonViewModel.updateClipProgress(
+                                                        clip.id,
+                                                        progress
+                                                    )
+                                                }
                                             )
                                         })
                                     } else {
@@ -108,6 +114,12 @@ data class EpisodeScreen(
                                             cookie = mapOf("cookie" to clipData.cookie),
                                             playbackArtwork = clip.image,
                                             playbackTitle = clip.projectTitle,
+                                            onVideoIsPlayingTask = { progress ->
+                                                commonViewModel.updateClipProgress(
+                                                    clip.id,
+                                                    progress
+                                                )
+                                            }
                                         )
                                     }
                                 }

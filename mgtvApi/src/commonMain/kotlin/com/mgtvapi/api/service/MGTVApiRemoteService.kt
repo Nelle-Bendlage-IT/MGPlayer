@@ -1,14 +1,19 @@
 package com.mgtvapi.api.service
 
+import co.touchlab.kermit.Logger
 import com.mgtvapi.api.model.ClipFileResponse
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
+import com.mgtvapi.api.model.UpdateClipProgressRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.cookies.cookies
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
 import io.ktor.http.Cookie
 import io.ktor.http.parameters
 
@@ -77,5 +82,14 @@ class MGTVApiRemoteService(
             }
         }
         return data.body<MagazineResponse>()
+    }
+
+    suspend fun updateClipProgress(clipID: String, time: Int) {
+        val data = client.put("$BASE_URL/api/v2/watch/$clipID/progress") {
+            setBody(UpdateClipProgressRequest(percentage = time))
+            this.header("Content-Type", "application/json")
+        }
+        Logger.d(data.body<String>().toString(), tag = "updateClipProgress")
+        //return data.status
     }
 }
