@@ -27,10 +27,10 @@ actual fun VideoPlayer(
     cookie: Map<Any?, *>?,
     playbackTitle: String,
     playbackArtwork: String,
+    onVideoIsPlayingTask: (progress: Int) -> Unit,
 ) {
     var mediaPlayerController by remember { mutableStateOf<MediaPlayerController?>(null) }
     var currentUrl by remember { mutableStateOf(url) }
-
     LaunchedEffect(Unit) {
         mediaPlayerController =
             withContext(Dispatchers.Main) {
@@ -58,8 +58,7 @@ actual fun VideoPlayer(
             },
             interactive = true,
             background = Color.Gray,
-            update = {
-            },
+            update = {},
             onRelease = {
                 mediaPlayerController!!.stop()
             },

@@ -82,11 +82,24 @@ class MGTVApiRepositoryImpl(
         }
     }
 
-    override suspend fun getMagazine(magazineID: String, limit: Int, offset: Int): MagazineResponse {
+    override suspend fun getMagazine(
+        magazineID: String,
+        limit: Int,
+        offset: Int
+    ): MagazineResponse {
         return try {
             apiService.getMagazine(magazineID, limit, offset)
         } catch (e: Exception) {
             Logger.e("GETMAGAZINE", e)
+            throw Exceptions.UnknownErrorException(e.message)
+        }
+    }
+
+    override suspend fun updateClipProgress(magazineID: String, progress: Int) {
+        try {
+            apiService.updateClipProgress(magazineID, progress)
+        } catch (e: Exception) {
+            Logger.e("updateClipProgress", e)
             throw Exceptions.UnknownErrorException(e.message)
         }
     }
