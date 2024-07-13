@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.interop.UIKitView
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 class IOSPlatform : Platform {
@@ -24,10 +25,10 @@ actual fun getPlatform(): Platform = IOSPlatform()
 actual fun VideoPlayer(
     modifier: Modifier,
     url: String,
-    cookie: Map<Any?, *>?,
     playbackTitle: String,
     playbackArtwork: String,
     onVideoIsPlayingTask: (progress: Int) -> Unit,
+    playbackSubtitle: String,
 ) {
     var mediaPlayerController by remember { mutableStateOf<MediaPlayerController?>(null) }
     var currentUrl by remember { mutableStateOf(url) }
@@ -35,12 +36,12 @@ actual fun VideoPlayer(
         mediaPlayerController =
             withContext(Dispatchers.Main) {
                 MediaPlayerController(
-                    cookie = cookie,
                     playbackTitle = playbackTitle,
                     playbackArtworkUrl = playbackArtwork,
                 )
             }
         mediaPlayerController!!.prepare(url)
+        mediaPlayerController!!.startObserving { onVideoIsPlayingTask(it) }
     }
 
     LaunchedEffect(url) {
