@@ -3,8 +3,10 @@ name: CI/CD
 on:
   push:
     branches: [ master ]
+    paths: ['gradle/**','composeApp/**','mgtvApi/**', 'iosApp/**']
   pull_request:
     branches: [ master ]
+    paths: ['gradle/**','composeApp/**','mgtvApi/**', 'iosApp/**']
 
 jobs:
   build:
