@@ -1,11 +1,11 @@
 package com.mgtvapi.api.service
 
 import co.touchlab.kermit.Logger
-import com.mgtvapi.api.model.ClipFileResponse
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
 import com.mgtvapi.api.model.UpdateClipProgressRequest
+import com.mgtvapi.api.model.WatchResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.cookies.cookies
@@ -57,10 +57,10 @@ class MGTVApiRemoteService(
         return data.body<MainFeedResponse>()
     }
 
-    suspend fun getClipFiles(clipId: String): ClipFileResponse {
-        val data = client.get("$BASE_URL/api/v2/downloads/$clipId")
+    suspend fun getClipDetails(clipId: String): WatchResponse {
+        val data = client.get("$BASE_URL/api/v2/watch/$clipId")
 
-        return data.body<ClipFileResponse>()
+        return data.body<WatchResponse>()
     }
 
     suspend fun getCookies(): List<Cookie> {

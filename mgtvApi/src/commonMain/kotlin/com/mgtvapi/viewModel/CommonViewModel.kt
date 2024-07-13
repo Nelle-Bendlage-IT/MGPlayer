@@ -3,7 +3,7 @@ package com.mgtvapi.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
-import com.mgtvapi.api.model.ClipFile
+import com.mgtvapi.api.model.WatchResponse
 import com.mgtvapi.api.repository.MGTVApiRepository
 import com.mgtvapi.domain.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -14,23 +14,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-data class ClipData(
-    val cookie: String,
-    val clipFiles: List<ClipFile>,
-)
 
 class CommonViewModel(private val repo: MGTVApiRepository) : KoinComponent, ViewModel() {
-    private var _clipData = MutableStateFlow<ResultState<ClipData>>(ResultState.Empty)
-    val clipData: StateFlow<ResultState<ClipData>> = _clipData.asStateFlow()
+    private var _clipData = MutableStateFlow<ResultState<WatchResponse>>(ResultState.Empty)
+    val clipData: StateFlow<ResultState<WatchResponse>> = _clipData.asStateFlow()
 
     fun getClipFiles(clipId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _clipData.value = ResultState.Loading
-                val cookies = repo.getCookies()
-                val result = repo.getClipFiles(clipId)
+                val result = repo.getClipDetails(clipId)
                 _clipData.value =
-                    ResultState.Success(ClipData(cookie = cookies, clipFiles = result.files))
+                    ResultState.Success(result)
             } catch (e: Exception) {
                 _clipData.value = ResultState.Error("${e.message}")
             }
