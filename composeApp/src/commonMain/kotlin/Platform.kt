@@ -6,10 +6,10 @@ import androidx.compose.ui.Modifier
 expect fun VideoPlayer(
     modifier: Modifier,
     url: String,
-    cookie: Map<Any?, *>?,
     playbackTitle: String,
     playbackArtwork: String,
     onVideoIsPlayingTask: (progress: Int) -> Unit,
+    playbackSubtitle: String,
 )
 
 interface Platform {
