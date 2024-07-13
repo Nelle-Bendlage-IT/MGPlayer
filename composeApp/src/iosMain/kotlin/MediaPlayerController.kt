@@ -1,5 +1,6 @@
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -13,30 +14,41 @@ import platform.AVFoundation.AVMetadataCommonIdentifierTitle
 import platform.AVFoundation.AVMutableMetadataItem
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
+import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
+import platform.AVFoundation.AVPlayerTimeControlStatusPlaying
 import platform.AVFoundation.AVURLAsset
+import platform.AVFoundation.addPeriodicTimeObserverForInterval
+import platform.AVFoundation.asset
 import platform.AVFoundation.currentItem
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
+import platform.AVFoundation.timeControlStatus
 import platform.AVKit.AVPlayerViewController
 import platform.AVKit.setExternalMetadata
+import platform.CoreMedia.CMTime
+import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.Foundation.NSData
+import platform.Foundation.NSNotificationCenter
+import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.dataWithContentsOfURL
 import platform.UIKit.UIView
+import platform.darwin.Float64
 import platform.darwin.NSEC_PER_SEC
 
 @OptIn(ExperimentalForeignApi::class)
 class MediaPlayerController(
     private val playbackArtworkUrl: String,
     private val playbackTitle: String,
-    private val cookie: Map<Any?, *>?,
 ) : ViewModel() {
     private val avPlayer: AVPlayer = AVPlayer()
     private val avPlayerViewController: AVPlayerViewController = AVPlayerViewController()
+    private lateinit var timeObserver: Any
+    private var duration: Float64 = 0.0
 
     init {
         setUpAudioSession()
@@ -60,8 +72,7 @@ class MediaPlayerController(
         val asset =
             AVURLAsset.URLAssetWithURL(
                 URL = NSURL(string = url),
-                // https://stackoverflow.com/a/78026972
-                options = mapOf("AVURLAssetHTTPHeaderFieldsKey" to cookie),
+                options = null,
             )
         val playerItem = AVPlayerItem(asset = asset)
         viewModelScope.launch(Dispatchers.IO) {
@@ -71,7 +82,33 @@ class MediaPlayerController(
         }
         stop()
         avPlayer.replaceCurrentItemWithPlayerItem(playerItem)
+        viewModelScope.launch(Dispatchers.IO) {
+            duration = CMTimeGetSeconds(avPlayer.currentItem!!.asset.duration())
+        }
         avPlayer.play()
+    }
+
+
+    @OptIn(ExperimentalForeignApi::class)
+    fun startObserving(onVideoIsPlayingTask: (progress: Int) -> Unit) {
+        val interval = CMTimeMakeWithSeconds(30.0, NSEC_PER_SEC.toInt())
+        timeObserver = avPlayer.addPeriodicTimeObserverForInterval(
+            interval,
+            null
+        ) { time: CValue<CMTime> ->
+            // https://stackoverflow.com/a/55915184/20329236
+            if (avPlayer.timeControlStatus == AVPlayerTimeControlStatusPlaying) {
+                val seconds = CMTimeGetSeconds(time)
+                onVideoIsPlayingTask((seconds / duration * 100).toInt())
+            }
+        }
+
+        NSNotificationCenter.defaultCenter.addObserverForName(
+            name = AVPlayerItemDidPlayToEndTimeNotification,
+            `object` = avPlayer.currentItem,
+            queue = NSOperationQueue.mainQueue,
+            usingBlock = {}
+        )
     }
 
     @Suppress("CAST_NEVER_SUCCEEDS")
