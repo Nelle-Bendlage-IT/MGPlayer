@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0"
+agp = "8.6.0-beta01"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
@@ -7,26 +7,27 @@ androidx-activityCompose = "1.9.0"
 androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.13.1"
-androidx-espresso-core = "3.5.1"
+androidx-espresso-core = "3.6.1"
 androidx-material = "1.12.0"
-androidx-test-junit = "1.1.5"
-compose = "1.6.8"
-compose-plugin = "1.6.10"
+androidx-test-junit = "1.2.1"
+compose = "1.7.0-beta05"
+compose-plugin = "1.6.11"
 junit = "4.13.2"
 kotlin = "2.0.0"
 koinVersion = "3.5.4"
 voyagerVersion = "1.1.0-beta01"
 kotlinVersion = "2.0.0"
-kotlinXCoroutinesVersion = "1.8.0"
+kotlinXCoroutinesVersion = "1.8.1"
 ktorVersion = "2.3.11"
-kotlinXDatetimeVersion = "0.5.0"
+kotlinXDatetimeVersion = "0.6.0"
 multiplatform-settings = "1.1.1"
 koin-compose = "1.1.2"
-androidx-lifecycle = "2.8.2"
-kamel-image = "0.9.4"
+androidx-lifecycle = "2.8.3"
 media3_version = "1.3.1"
-kermit = "2.0.3"
+kermit = "2.0.4"
 coil3 = "3.0.0-alpha06"
+coil2 = "2.6.0"
+androidx-media = "1.7.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -44,6 +45,7 @@ androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "medi
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3_version" }
 androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3_version" }
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3_version" }
+androidx-media = { module = "androidx.media:media", version.ref = "androidx-media" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
@@ -66,8 +68,9 @@ multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", vers
 multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
-image-loader = { module = "media.kamel:kamel-image", version.ref = "kamel-image" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
+coil-android = { module = "io.coil-kt:coil", version.ref = "coil2" }
+
 coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil3" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil3" }
 coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
