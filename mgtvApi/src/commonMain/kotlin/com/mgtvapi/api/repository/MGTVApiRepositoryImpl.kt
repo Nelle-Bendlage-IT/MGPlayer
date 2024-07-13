@@ -1,10 +1,10 @@
 package com.mgtvapi.api.repository
 
 import co.touchlab.kermit.Logger
-import com.mgtvapi.api.model.ClipFileResponse
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
+import com.mgtvapi.api.model.WatchResponse
 import com.mgtvapi.api.service.MGTVApiRemoteService
 import com.mgtvapi.api.util.Exceptions
 import kotlinx.coroutines.flow.Flow
@@ -57,9 +57,9 @@ class MGTVApiRepositoryImpl(
         tokenManager.cleanStorage()
     }
 
-    override suspend fun getClipFiles(clipId: String): ClipFileResponse {
+    override suspend fun getClipDetails(clipId: String): WatchResponse {
         try {
-            return apiService.getClipFiles(clipId)
+            return apiService.getClipDetails(clipId)
         } catch (e: Exception) {
             Logger.e("GETCLIPFILES", e)
             throw Exceptions.UnknownErrorException(e.message)

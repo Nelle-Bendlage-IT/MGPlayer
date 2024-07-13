@@ -1,9 +1,9 @@
 package com.mgtvapi.api.repository
 
-import com.mgtvapi.api.model.ClipFileResponse
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
+import com.mgtvapi.api.model.WatchResponse
 import kotlinx.coroutines.flow.Flow
 
 interface MGTVApiRepository {
@@ -17,7 +17,7 @@ interface MGTVApiRepository {
         count: Int,
     ): MainFeedResponse
 
-    suspend fun getClipFiles(clipId: String): ClipFileResponse
+    suspend fun getClipDetails(clipId: String): WatchResponse
 
     fun isLoggedIn(): Flow<Boolean>
 
