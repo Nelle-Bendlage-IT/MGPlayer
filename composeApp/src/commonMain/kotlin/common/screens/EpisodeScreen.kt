@@ -36,8 +36,8 @@ import coil3.compose.AsyncImage
 import com.mgtvapi.Parcelable
 import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
+import com.mgtvapi.api.model.WatchResponse
 import com.mgtvapi.domain.ResultState
-import com.mgtvapi.viewModel.ClipData
 import com.mgtvapi.viewModel.CommonViewModel
 import common.components.DropdownMenu
 import common.components.MGCircularProgressIndicator
@@ -67,8 +67,8 @@ data class EpisodeScreen(
                 is ResultState.Error, ResultState.Loading, ResultState.Empty -> MGCircularProgressIndicator()
                 is ResultState.Success -> {
                     val clipData =
-                        (clipDataState.value as ResultState.Success<ClipData>).data
-                    val clipFiles = clipData.clipFiles
+                        (clipDataState.value as ResultState.Success<WatchResponse>).data
+                    val clipFiles = clipData.stream.media.files
                     val clipFile = clipFiles.first()
                     val chosenQuality = remember { mutableStateOf(clipFile) }
                     val startPlaying = remember { mutableStateOf(false) }
@@ -95,10 +95,10 @@ data class EpisodeScreen(
                                         navigator.push(PlayerScreen {
                                             VideoPlayer(
                                                 modifier = Modifier.fillMaxSize(),
-                                                url = chosenQuality.value.url.toUrl(),
-                                                cookie = mapOf("cookie" to clipData.cookie),
+                                                url = chosenQuality.value.url,
                                                 playbackArtwork = clip.image,
                                                 playbackTitle = clip.projectTitle,
+                                                playbackSubtitle = clip.title,
                                                 onVideoIsPlayingTask = { progress ->
                                                     commonViewModel.updateClipProgress(
                                                         clip.id,
@@ -110,10 +110,10 @@ data class EpisodeScreen(
                                     } else {
                                         VideoPlayer(
                                             modifier = Modifier.fillMaxSize(),
-                                            url = chosenQuality.value.url.toUrl(),
-                                            cookie = mapOf("cookie" to clipData.cookie),
+                                            url = chosenQuality.value.url,
                                             playbackArtwork = clip.image,
                                             playbackTitle = clip.projectTitle,
+                                            playbackSubtitle = clip.title,
                                             onVideoIsPlayingTask = { progress ->
                                                 commonViewModel.updateClipProgress(
                                                     clip.id,
@@ -153,10 +153,6 @@ data class EpisodeScreen(
     }
 }
 
-
-fun String.toUrl(): String {
-    return "https:$this"
-}
 
 @Parcelize
 private data class PlayerScreen(
