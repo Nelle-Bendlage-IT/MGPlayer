@@ -133,18 +133,18 @@ private fun EpisodeListItem(
             .clickable(
                 onClick = onClick
             )
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 4.dp, vertical = 12.dp) // Padding moved outside
             .fillMaxWidth()
     ) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    Modifier.height(83.dp)
-                        .width(153.dp).clip(RoundedCornerShape(10.dp))
+                    Modifier.height(81.dp)
+                        .width(153.dp).clip(RoundedCornerShape(12.dp))
                 ) {
                     AsyncImage(
                         contentDescription = clip.description,
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize(),
                         model = clip.artworkUrl
                     )
@@ -156,7 +156,7 @@ private fun EpisodeListItem(
                     clip.shortDescription?.let { it1 ->
                         Text(
                             text = it1,
-                            style = MaterialTheme.typography.titleSmall,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     }
