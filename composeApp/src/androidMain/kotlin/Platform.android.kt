@@ -1,6 +1,5 @@
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
-import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
@@ -14,10 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -31,18 +26,11 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaItem.RequestMetadata
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.MoreExecutors
 import com.mgtv.MainActivity
 import com.mgtv.MediaPlayerController
-import com.mgtv.player.playback.PlayBackService
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 
 class AndroidPlatform : Platform {
@@ -66,7 +54,6 @@ actual fun VideoPlayer(
 ) {
     val context = LocalContext.current
     val activity = context.getActivity() ?: return
-    val scope = rememberCoroutineScope()
     val mediaPlayerController = remember {
         MediaPlayerController(
             context,
