@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,14 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
-import cafe.adriel.voyager.core.lifecycle.LifecycleEffectOnce
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
-import com.mgtvapi.Parcelable
-import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.Magazine
 import com.mgtvapi.domain.ResultState
@@ -46,81 +40,97 @@ import common.components.MGTopAppBar
 import common.util.PAGINATION_THRESHOLD
 import org.koin.compose.koinInject
 
-@Parcelize
-data class MagazineScreen(
-    val magazine: Magazine,
-) : Screen, Parcelable {
-    @OptIn(ExperimentalVoyagerApi::class)
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val lazyColumnListState = rememberLazyListState()
-        val magazineOverviewViewModel: MagazineOverviewViewModel =
-            koinInject<MagazineOverviewViewModel>()
-        val isInitial = magazineOverviewViewModel.isInitial.collectAsState().value
-        val magazineEpisodes = magazineOverviewViewModel.magazineEpisodes.collectAsState().value
-        var lastCalledIndex by remember { mutableStateOf<Int?>(null) }
+@Composable
+fun MagazineScreen(
+    magazine: Magazine,
+    onEpisodeClick: (String, String) -> Unit,
+    onBackPressed: () -> Unit,
+    onDispose: () -> Unit,
+) {
+    val lazyColumnListState = rememberLazyListState()
+    val magazineOverviewViewModel: MagazineOverviewViewModel =
+        koinInject<MagazineOverviewViewModel>()
+    val isInitial = magazineOverviewViewModel.isInitial.collectAsState().value
+    val magazineEpisodes = magazineOverviewViewModel.magazineEpisodes.collectAsState().value
+    var lastCalledIndex by remember { mutableStateOf<Int?>(null) }
 
-        LifecycleEffectOnce {
-            magazineOverviewViewModel.fetchMagazine("${magazine.pid}", 20, 0)
+    DisposableEffect(Unit) {
+        magazineOverviewViewModel.fetchMagazine(
+            "${magazine.pid}",
+            limit = 20,
+            offset = 0,
+            magazine = magazine
+        )
+
+        onDispose {
+            onDispose()
         }
+    }
 
-        LaunchedEffect(lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index) {
-            val lastIndex = lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-            if (lastIndex != lastCalledIndex) {
-                if (!isInitial && lazyColumnListState.layoutInfo.totalItemsCount - PAGINATION_THRESHOLD < lastIndex!!) {
-                    magazineOverviewViewModel.fetchMagazine(
-                        "${magazine.pid}",
-                        40,
-                        lazyColumnListState.layoutInfo.totalItemsCount
-                    )
-                    lastCalledIndex = lastIndex
-                }
-            }
-        }
 
-        Scaffold(topBar = {
-            MGTopAppBar(onBackPressed = { navigator.pop() }, showBackButton = true)
-        }) {
-            LazyColumn(Modifier.padding(it), state = lazyColumnListState) {
-                item {
-                    Box(
-                        Modifier
-                            .height(150.dp).fillMaxWidth()
-                            .padding(8.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                    ) {
-                        AsyncImage(
-                            contentDescription = magazine.title,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize(),
-                            model = if (magazine.artwork.banner == null) magazine.artwork.logo else magazine.artwork.banner!!.n1x
-                        )
-                    }
-                }
-                when (magazineEpisodes) {
-                    is ResultState.Empty, ResultState.Loading -> item {
-                        MGCircularProgressIndicator()
-                    }
-
-                    is ResultState.Error -> item {
-                        Text(magazineEpisodes.message, style = MaterialTheme.typography.bodyLarge)
-                    }
-
-                    is ResultState.Success -> items(magazineEpisodes.data.count()) { clip ->
-                        EpisodeListItem(
-                            clip = magazineEpisodes.data[clip],
-                            onClick = { navigator.push(EpisodeScreen(magazineEpisodes.data[clip])) })
-                        if (clip != magazineEpisodes.data.count() - 1) {
-                            HorizontalDivider()
-                        }
-                    }
-                }
-
+    LaunchedEffect(lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index) {
+        val lastIndex = lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+        if (lastIndex != lastCalledIndex) {
+            if (!isInitial && lazyColumnListState.layoutInfo.totalItemsCount - PAGINATION_THRESHOLD < lastIndex!!) {
+                magazineOverviewViewModel.fetchMagazine(
+                    "${magazine.pid}",
+                    limit = 40,
+                    offset = lazyColumnListState.layoutInfo.totalItemsCount,
+                    magazine = magazine
+                )
+                lastCalledIndex = lastIndex
             }
         }
     }
+
+    Scaffold(topBar = {
+        MGTopAppBar(onBackPressed = onBackPressed, showBackButton = true)
+    }) {
+        LazyColumn(Modifier.padding(it), state = lazyColumnListState) {
+            item {
+                Box(
+                    Modifier
+                        .height(150.dp).fillMaxWidth()
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                ) {
+                    AsyncImage(
+                        contentDescription = magazine.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                        model = if (magazine.artwork.banner == null) magazine.artwork.logo else magazine.artwork.banner!!.n1x
+                    )
+                }
+            }
+            when (magazineEpisodes) {
+                is ResultState.Empty, ResultState.Loading -> item {
+                    MGCircularProgressIndicator()
+                }
+
+                is ResultState.Error -> item {
+                    Text(magazineEpisodes.message, style = MaterialTheme.typography.bodyLarge)
+                }
+
+                is ResultState.Success -> items(magazineEpisodes.data.count()) { clip ->
+                    EpisodeListItem(
+                        clip = magazineEpisodes.data[clip],
+                        onClick = {
+                            onEpisodeClick(
+                                magazineEpisodes.data[clip].magazineId.toString(),
+                                magazineEpisodes.data[clip].id
+                            )
+                        }
+                    )
+                    if (clip != magazineEpisodes.data.count() - 1) {
+                        HorizontalDivider()
+                    }
+                }
+            }
+
+        }
+    }
 }
+
 
 @Composable
 private fun EpisodeListItem(

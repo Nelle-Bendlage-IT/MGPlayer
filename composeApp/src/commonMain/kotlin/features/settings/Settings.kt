@@ -1,6 +1,7 @@
 package features.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,9 +13,9 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun Settings(onLogOutPressed: () -> Unit) {
+fun Settings(onLogOutPressed: () -> Unit, innerPadding: PaddingValues) {
 
-    Column {
+    Column(modifier = Modifier.padding(innerPadding)) {
         Button(
             modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
             shape = RoundedCornerShape(30.dp),

@@ -54,9 +54,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.tab.navigator)
             implementation(project(":mgtvApi"))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -65,6 +62,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
+            implementation(libs.androidx.navigation)
         }
     }
 }

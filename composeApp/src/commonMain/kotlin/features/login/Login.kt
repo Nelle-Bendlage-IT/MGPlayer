@@ -50,7 +50,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.mgtvapi.api.repository.MGTVApiRepository
 import common.components.MGCircularProgressIndicator
 import kotlinx.coroutines.launch
@@ -63,40 +62,39 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
-class LoginScreen() : Screen {
-    @Composable
-    override fun Content() {
-        var loading by rememberSaveable { mutableStateOf(false) }
-        var email by rememberSaveable { mutableStateOf("") }
-        var password by rememberSaveable { mutableStateOf("") }
-        val isSubmitEnabled =
-            remember(email, password, loading) {
-                !loading && (email.isNotBlank() && password.isNotBlank())
-            }
-        val repo: MGTVApiRepository = koinInject()
-        val scope = rememberCoroutineScope()
-
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            LoginContent(
-                onPasswordChange = { value: String -> password = value },
-                onEmailChange = { value: String -> email = value },
-                email = email,
-                password = password,
-                loading = loading,
-                isSubmitEnabled = isSubmitEnabled,
-                onSubmit = {
-                    scope.launch {
-                        loading = true
-                            repo.login(email = email, password = password)
-                        loading = false
-                    }
-                },
-            )
+@Composable
+fun LoginScreen() {
+    var loading by rememberSaveable { mutableStateOf(false) }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    val isSubmitEnabled =
+        remember(email, password, loading) {
+            !loading && (email.isNotBlank() && password.isNotBlank())
         }
+    val repo: MGTVApiRepository = koinInject()
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        LoginContent(
+            onPasswordChange = { value: String -> password = value },
+            onEmailChange = { value: String -> email = value },
+            email = email,
+            password = password,
+            loading = loading,
+            isSubmitEnabled = isSubmitEnabled,
+            onSubmit = {
+                scope.launch {
+                    loading = true
+                    repo.login(email = email, password = password)
+                    loading = false
+                }
+            },
+        )
     }
 }
+
 
 @Preview
 @Composable
@@ -113,12 +111,12 @@ fun LoginContent(
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .navigationBarsPadding()
-                .imePadding()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+        Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -153,7 +151,7 @@ fun LoginContent(
             modifier = Modifier.fillMaxWidth(),
             enabled = isSubmitEnabled,
         ) {
-            if (!loading){
+            if (!loading) {
                 Text(text = stringResource(resource = Res.string.login_submit))
             } else {
                 MGCircularProgressIndicator()
@@ -175,21 +173,21 @@ fun EmailTextField(
         onValueChange = onEmailChange,
         label = { Text(text = stringResource(Res.string.email)) },
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .autofill(
-                    autofillTypes = listOf(AutofillType.EmailAddress),
-                    onFill = onEmailChange,
-                ),
+        Modifier
+            .fillMaxWidth()
+            .autofill(
+                autofillTypes = listOf(AutofillType.EmailAddress),
+                onFill = onEmailChange,
+            ),
         singleLine = true,
         keyboardOptions =
-            KeyboardOptions(
-                imeAction = ImeAction.Next,
-            ),
+        KeyboardOptions(
+            imeAction = ImeAction.Next,
+        ),
         keyboardActions =
-            KeyboardActions(
-                onNext = { onNext() },
-            ),
+        KeyboardActions(
+            onNext = { onNext() },
+        ),
         enabled = !loading,
     )
 }
@@ -233,23 +231,23 @@ fun PasswordTextField(
         onValueChange = onPasswordChange,
         label = { Text(text = "Password") },
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .autofill(
-                    autofillTypes = listOf(AutofillType.Password),
-                    onFill = onPasswordChange,
-                ),
+        Modifier
+            .fillMaxWidth()
+            .autofill(
+                autofillTypes = listOf(AutofillType.Password),
+                onFill = onPasswordChange,
+            ),
         singleLine = true,
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions =
-            KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done,
-            ),
+        KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done,
+        ),
         keyboardActions =
-            KeyboardActions(
-                onDone = { onDone() },
-            ),
+        KeyboardActions(
+            onDone = { onDone() },
+        ),
         trailingIcon = {
             IconButton(onClick = {
                 if (!loading) passwordVisibility = !passwordVisibility

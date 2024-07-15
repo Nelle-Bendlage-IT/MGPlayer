@@ -14,35 +14,49 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.mgtvapi.api.model.Magazine
 import com.mgtvapi.domain.ResultState
+import com.mgtvapi.viewModel.MagazineOverviewViewModel
 import common.components.MGCircularProgressIndicator
-import common.screens.MagazineScreen
+import org.koin.compose.koinInject
 
 @Composable
 fun MagazineOverview(
-    fetchMagazines: () -> Unit,
-    magazines: ResultState<List<Magazine>>
+    onItemClick: (String, Magazine) -> Unit,
+    innerPadding: PaddingValues,
 ) {
-    val navigator = LocalNavigator.currentOrThrow
+    val magazineOverviewViewModel: MagazineOverviewViewModel =
+        koinInject<MagazineOverviewViewModel>()
 
     LaunchedEffect(Unit) {
-        fetchMagazines()
+        magazineOverviewViewModel.fetchMagazines()
     }
+    MagazineOverviewContent(
+        magazines = magazineOverviewViewModel.magazines.collectAsState().value,
+        onItemClick = onItemClick,
+        innerPadding = innerPadding
+    )
 
+}
 
+@Composable
+private fun MagazineOverviewContent(
+    magazines: ResultState<List<Magazine>>,
+    onItemClick: (String, Magazine) -> Unit,
+    innerPadding: PaddingValues,
+) {
     when (magazines) {
         is ResultState.Loading, is ResultState.Empty -> MGCircularProgressIndicator()
         is ResultState.Error -> Text(magazines.message, style = MaterialTheme.typography.bodyLarge)
         is ResultState.Success -> {
             LazyVerticalGrid(
+                modifier = Modifier.padding(innerPadding),
                 contentPadding = PaddingValues(5.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
@@ -52,11 +66,7 @@ fun MagazineOverview(
                         Modifier.padding(3.dp).clip(
                             RoundedCornerShape(16.dp)
                         ).aspectRatio(16f / 9f).clickable {
-                            navigator.push(
-                                MagazineScreen(
-                                    magazine = magazine
-                                )
-                            )
+                            onItemClick(magazine.pid.toString(), magazine)
                         }
                     ) {
                         AsyncImage(
@@ -70,5 +80,5 @@ fun MagazineOverview(
             }
         }
     }
-}
 
+}

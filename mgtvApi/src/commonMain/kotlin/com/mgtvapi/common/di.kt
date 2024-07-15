@@ -27,7 +27,7 @@ val mgtvApiSharedModule =
         single {
             HomeViewModel(get())
         }
-        factory {
+        single {
             CommonViewModel(get())
         }
         single {
