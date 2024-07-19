@@ -20,3 +20,5 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":mgtvApi")
+include(":mgplayertv")
+include(":shared-core")
