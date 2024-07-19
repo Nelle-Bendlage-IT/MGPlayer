@@ -35,11 +35,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.Parcelable
 import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.Magazine
-import com.mgtvapi.domain.ResultState
 import com.mgtvapi.viewModel.MagazineOverviewViewModel
 import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
@@ -99,15 +99,15 @@ data class MagazineScreen(
                     }
                 }
                 when (magazineEpisodes) {
-                    is ResultState.Empty, ResultState.Loading -> item {
+                    is ViewState.Empty, ViewState.Loading -> item {
                         MGCircularProgressIndicator()
                     }
 
-                    is ResultState.Error -> item {
+                    is ViewState.Error -> item {
                         Text(magazineEpisodes.message, style = MaterialTheme.typography.bodyLarge)
                     }
 
-                    is ResultState.Success -> items(magazineEpisodes.data.count()) { clip ->
+                    is ViewState.Success -> items(magazineEpisodes.data.count()) { clip ->
                         EpisodeListItem(
                             clip = magazineEpisodes.data[clip],
                             onClick = { navigator.push(EpisodeScreen(magazineEpisodes.data[clip])) })

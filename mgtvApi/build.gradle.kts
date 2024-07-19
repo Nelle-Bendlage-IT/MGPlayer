@@ -50,6 +50,7 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.kermit)
+            implementation(project(":shared-core"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

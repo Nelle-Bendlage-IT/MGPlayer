@@ -3,9 +3,9 @@ package com.mgtvapi.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.WatchResponse
 import com.mgtvapi.api.repository.MGTVApiRepository
-import com.mgtvapi.domain.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,18 +16,18 @@ import org.koin.core.component.KoinComponent
 
 
 class CommonViewModel(private val repo: MGTVApiRepository) : KoinComponent, ViewModel() {
-    private var _clipData = MutableStateFlow<ResultState<WatchResponse>>(ResultState.Empty)
-    val clipData: StateFlow<ResultState<WatchResponse>> = _clipData.asStateFlow()
+    private var _clipData = MutableStateFlow<ViewState<WatchResponse>>(ViewState.Empty)
+    val clipData: StateFlow<ViewState<WatchResponse>> = _clipData.asStateFlow()
 
     fun getClipFiles(clipId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _clipData.value = ResultState.Loading
+                _clipData.value = ViewState.Loading
                 val result = repo.getClipDetails(clipId)
                 _clipData.value =
-                    ResultState.Success(result)
+                    ViewState.Success(result)
             } catch (e: Exception) {
-                _clipData.value = ResultState.Error("${e.message}")
+                _clipData.value = ViewState.Error("${e.message}")
             }
         }
     }
