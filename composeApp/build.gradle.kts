@@ -58,6 +58,7 @@ kotlin {
             implementation(libs.voyager.transitions)
             implementation(libs.voyager.tab.navigator)
             implementation(project(":mgtvApi"))
+            implementation(project(":shared-core"))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.androidx.lifecycle.viewmodel)

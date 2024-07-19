@@ -15,8 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Clip
-import com.mgtvapi.domain.ResultState
 import common.components.ClipCard
 import common.components.MGCircularProgressIndicator
 import common.screens.EpisodeScreen
@@ -25,8 +25,8 @@ private const val PAGINATION_THRESHOLD = 12
 
 @Composable
 fun Home(
-    mainFeedClipsState: ResultState<List<Clip>>,
-    mainFeedClipsPaginationState: ResultState<Boolean>,
+    mainFeedClipsState: ViewState<List<Clip>>,
+    mainFeedClipsPaginationState: ViewState<Boolean>,
     getMainFeedClipsPagination: (offset: Int) -> Unit,
     getMainFeedClips: (offset: Int, count: Int) -> Unit,
     isInitial: Boolean,
@@ -52,11 +52,11 @@ fun Home(
     }
 
     when (mainFeedClipsState) {
-        is ResultState.Loading, is ResultState.Empty -> {
+        is ViewState.Loading, is ViewState.Empty -> {
             MGCircularProgressIndicator()
         }
 
-        is ResultState.Success -> {
+        is ViewState.Success -> {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 state = lazyColumnListState,
@@ -71,11 +71,11 @@ fun Home(
                 }
                 item(key = "paginationState") {
                     when (mainFeedClipsPaginationState) {
-                        is ResultState.Loading -> {
+                        is ViewState.Loading -> {
                             MGCircularProgressIndicator()
                         }
 
-                        is ResultState.Error -> {
+                        is ViewState.Error -> {
                             Text(mainFeedClipsPaginationState.message)
                         }
 
@@ -85,7 +85,7 @@ fun Home(
             }
         }
 
-        is ResultState.Error -> {
+        is ViewState.Error -> {
             Text("ERROR", style = MaterialTheme.typography.bodyLarge)
         }
     }

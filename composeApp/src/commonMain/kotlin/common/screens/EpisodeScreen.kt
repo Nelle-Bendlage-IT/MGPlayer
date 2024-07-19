@@ -33,11 +33,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.Parcelable
 import com.mgtvapi.Parcelize
 import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.WatchResponse
-import com.mgtvapi.domain.ResultState
 import com.mgtvapi.viewModel.CommonViewModel
 import common.components.DropdownMenu
 import common.components.MGCircularProgressIndicator
@@ -64,10 +64,10 @@ data class EpisodeScreen(
             MGTopAppBar(onBackPressed = { navigator.pop() }, showBackButton = true)
         }) {
             when (clipDataState.value) {
-                is ResultState.Error, ResultState.Loading, ResultState.Empty -> MGCircularProgressIndicator()
-                is ResultState.Success -> {
+                is ViewState.Error, ViewState.Loading, ViewState.Empty -> MGCircularProgressIndicator()
+                is ViewState.Success -> {
                     val clipData =
-                        (clipDataState.value as ResultState.Success<WatchResponse>).data
+                        (clipDataState.value as ViewState.Success<WatchResponse>).data
                     val clipFiles = clipData.stream.media.files
                     val clipFile = clipFiles.first()
                     val chosenQuality = remember { mutableStateOf(clipFile) }
