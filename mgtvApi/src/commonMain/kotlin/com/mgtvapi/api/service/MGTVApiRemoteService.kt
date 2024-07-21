@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
+import com.mgtvapi.api.model.ProgressResponse
 import com.mgtvapi.api.model.UpdateClipProgressRequest
 import com.mgtvapi.api.model.WatchResponse
 import io.ktor.client.HttpClient
@@ -91,5 +92,11 @@ class MGTVApiRemoteService(
         }
         Logger.d(data.body<String>().toString(), tag = "updateClipProgress")
         //return data.status
+    }
+
+    suspend fun getRecentlyWatched(): ProgressResponse {
+        val data = client.get("$BASE_URL/api/v2/feed/progress/recent")
+
+        return data.body<ProgressResponse>()
     }
 }

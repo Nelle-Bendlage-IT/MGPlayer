@@ -4,13 +4,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Clip
+import com.mgtvapi.api.model.ProgressClip
 import com.mgtvapi.api.repository.MGTVApiRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+data class CombinedState(
+    val mainFeedClips: ViewState<List<Clip>>,
+    val recentlyWatchedClips: ViewState<List<ProgressClip>>
+)
+
 
 class HomeViewModel(private val repo: MGTVApiRepository) : ViewModel() {
     private var _clips = MutableStateFlow<ViewState<List<Clip>>>(ViewState.Empty)
@@ -19,6 +29,19 @@ class HomeViewModel(private val repo: MGTVApiRepository) : ViewModel() {
     val paginationLoading: StateFlow<ViewState<Boolean>> = _paginationLoading.asStateFlow()
     private var _isInitial = MutableStateFlow(true)
     val isInitial: StateFlow<Boolean> = _isInitial.asStateFlow()
+    private var _recentlyWatchedClips =
+        MutableStateFlow<ViewState<List<ProgressClip>>>(ViewState.Empty)
+
+
+    val recentlyWatchedClips: StateFlow<ViewState<List<ProgressClip>>> =
+        _recentlyWatchedClips.asStateFlow()
+
+    val homeScreenClips: StateFlow<CombinedState> = combine(
+        clips,
+        recentlyWatchedClips
+    ) { clipsState, recentlyWatchedState ->
+        CombinedState(clipsState, recentlyWatchedState)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, CombinedState(ViewState.Loading, ViewState.Loading))
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,6 +83,18 @@ class HomeViewModel(private val repo: MGTVApiRepository) : ViewModel() {
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.logout()
+        }
+    }
+
+    fun getRecentlyWatched() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _recentlyWatchedClips.value = ViewState.Loading
+                val result = repo.getRecentlyWatched()
+                _recentlyWatchedClips.value = ViewState.Success(result.progress)
+            } catch (e: Exception) {
+                _recentlyWatchedClips.value = ViewState.Error(e.message.toString())
+            }
         }
     }
 }
