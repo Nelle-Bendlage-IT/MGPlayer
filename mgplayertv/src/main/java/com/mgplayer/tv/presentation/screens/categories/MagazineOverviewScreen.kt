@@ -18,6 +18,7 @@ package com.mgplayer.tv.presentation.screens.categories
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,8 +41,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.tv.material3.MaterialTheme
 import com.mgplayer.tv.presentation.common.ErrorScreen
 import com.mgplayer.tv.presentation.common.Loading
 import com.mgplayer.tv.presentation.common.MovieCard
@@ -55,7 +58,7 @@ import org.koin.compose.koinInject
 @Composable
 fun MagazineOverviewScreen(
     gridColumns: Int = 4,
-    onCategoryClick: (categoryId: String) -> Unit,
+    onCategoryClick: (categoryId: String, isActive: Boolean) -> Unit,
     onScroll: (isTopBarVisible: Boolean) -> Unit,
     magazineOverviewViewModel: MagazineOverviewViewModel =
         koinInject<MagazineOverviewViewModel>()
@@ -77,7 +80,7 @@ fun MagazineOverviewScreen(
         is ViewState.Success -> {
             Catalog(
                 gridColumns = gridColumns,
-                movieCategories = s.data,
+                magazines = s.data,
                 onCategoryClick = onCategoryClick,
                 onScroll = onScroll,
                 modifier = Modifier.fillMaxSize()
@@ -89,10 +92,10 @@ fun MagazineOverviewScreen(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Catalog(
-    movieCategories: List<Magazine>,
+    magazines: List<Magazine>,
     modifier: Modifier = Modifier,
     gridColumns: Int = 4,
-    onCategoryClick: (categoryId: String) -> Unit,
+    onCategoryClick: (categoryId: String, isActive: Boolean) -> Unit,
     onScroll: (isTopBarVisible: Boolean) -> Unit,
 ) {
     val childPadding = rememberChildPadding()
@@ -108,7 +111,7 @@ private fun Catalog(
     }
 
     AnimatedContent(
-        targetState = movieCategories,
+        targetState = magazines,
         modifier = Modifier
             .padding(horizontal = childPadding.start)
             .padding(top = childPadding.top),
@@ -119,11 +122,11 @@ private fun Catalog(
             modifier = modifier,
             columns = GridCells.Fixed(gridColumns),
         ) {
-            itemsIndexed(it) { index, movieCategory ->
+            itemsIndexed(it) { index, magazine ->
                 var isFocused by remember { mutableStateOf(false) }
                 MovieCard(
                     onClick = {
-                        onCategoryClick(movieCategory.pid.toString())
+                        onCategoryClick(magazine.pid.toString(), magazine.active)
                     },
                     modifier = Modifier
                         .padding(8.dp)
@@ -144,11 +147,12 @@ private fun Catalog(
 
                     Box(contentAlignment = Alignment.Center) {
                         PosterImage(
-                            posterURI = movieCategory.artwork.logo,
+                            contentScale = ContentScale.Fit,
+                            posterURI = if (magazine.artwork.logo.isEmpty()) magazine.artwork.banner!!.n1x else magazine.artwork.logo,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .alpha(itemAlpha),
-                            name = movieCategory.magazineName
+                                .background(MaterialTheme.colorScheme.onBackground),
+                            name = magazine.magazineName
                         )
                     }
                 }

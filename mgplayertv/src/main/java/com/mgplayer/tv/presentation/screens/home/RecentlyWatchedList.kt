@@ -93,7 +93,7 @@ fun RecentlyWatchedList(
 }
 
 @Composable
-private fun ImmersiveList(
+fun ImmersiveList(
     selectedClip: Clip,
     isListFocused: Boolean,
     gradientColor: Color,

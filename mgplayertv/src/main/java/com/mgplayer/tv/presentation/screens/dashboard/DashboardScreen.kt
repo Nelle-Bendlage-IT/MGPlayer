@@ -78,7 +78,7 @@ fun rememberChildPadding(direction: LayoutDirection = LocalLayoutDirection.curre
 
 @Composable
 fun DashboardScreen(
-    openCategoryMovieList: (categoryId: String) -> Unit,
+    openCategoryMovieList: (categoryId: String, isActive: Boolean) -> Unit,
     openMovieDetailsScreen: (movieId: String) -> Unit,
     openVideoPlayer: (Clip) -> Unit,
     isComingBackFromDifferentScreen: Boolean,
@@ -215,7 +215,7 @@ private fun BackPressHandledArea(
 
 @Composable
 private fun Body(
-    openCategoryMovieList: (categoryId: String) -> Unit,
+    openCategoryMovieList: (categoryId: String, isActive: Boolean) -> Unit,
     openMovieDetailsScreen: (movieId: String) -> Unit,
     openVideoPlayer: (Clip) -> Unit,
     updateTopBarVisibility: (Boolean) -> Unit,

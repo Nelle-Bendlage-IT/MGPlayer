@@ -21,7 +21,6 @@ import com.mgplayer.tv.presentation.screens.Screens
 import com.mgplayer.tv.presentation.screens.categories.MagazineClipsListScreen
 import com.mgplayer.tv.presentation.screens.dashboard.DashboardScreen
 import com.mgplayer.tv.presentation.screens.movies.ClipDetailsScreen
-import com.mgplayer.tv.presentation.screens.movies.MovieDetailsScreen
 import com.mgplayer.tv.presentation.screens.videoPlayer.VideoPlayerScreen
 import com.mgplayer.tv.ui.LoginScreen
 import com.mgtvapi.api.repository.MGTVApiRepository
@@ -60,12 +59,18 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
                 enterTransition = { tabEnterTransition() },
                 exitTransition = { tabExitTransition() },
                 arguments = listOf(
-                    navArgument("magazineName") {
+                    navArgument(MagazineClipsListScreen.MagazineIdBundleKey) {
                         type = NavType.StringType
+                    },
+                    navArgument(MagazineClipsListScreen.IsActiveKey) {
+                        type = NavType.BoolType
                     }
+
                 )
             ) {
-                val magazineName = it.arguments?.getString("magazineName")
+                val magazineName =
+                    it.arguments?.getString(MagazineClipsListScreen.MagazineIdBundleKey)
+                val isActive = it.arguments?.getBoolean(MagazineClipsListScreen.IsActiveKey, false)
 
                 MagazineClipsListScreen(
                     onBackPressed = {
@@ -73,34 +78,30 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
                             isComingBackFromDifferentScreen = true
                         }
                     },
-                    magazineName = "$magazineName",
+                    magazineId = "$magazineName",
                     onClipSelected = { clip ->
                         navController.navigate(
                             Screens.MovieDetails.withArgs(clip.id)
                         )
-                    }
+                    },
+                    isActive = isActive!!
                 )
             }
             composable(
                 route = Screens.MovieDetails(),
                 arguments = listOf(
-                    navArgument(MovieDetailsScreen.MovieIdBundleKey) {
+                    navArgument(ClipDetailsScreen.ClipIdBundleKey) {
                         type = NavType.StringType
                     }
                 )
             ) {
+                val clipId = it.arguments?.getString(ClipDetailsScreen.ClipIdBundleKey)
+
                 ClipDetailsScreen(
-                    goToMoviePlayer = {
+                    clipId = clipId!!,
+                    goToMoviePlayer = { file ->
+                        commonViewModel.file = file
                         navController.navigate(Screens.VideoPlayer())
-                    },
-                    refreshScreenWithNewMovie = { movie ->
-                        navController.navigate(
-                            Screens.MovieDetails.withArgs(movie.id)
-                        ) {
-                            popUpTo(Screens.MovieDetails()) {
-                                inclusive = true
-                            }
-                        }
                     },
                     onBackPressed = {
                         if (navController.navigateUp()) {
@@ -111,9 +112,9 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
             }
             composable(route = Screens.Dashboard()) {
                 DashboardScreen(
-                    openCategoryMovieList = { categoryId ->
+                    openCategoryMovieList = { categoryId, isActive ->
                         navController.navigate(
-                            Screens.CategoryMovieList.withArgs(categoryId)
+                            Screens.CategoryMovieList.withArgs(categoryId, isActive)
                         )
                     },
                     openMovieDetailsScreen = { movieId ->
@@ -122,7 +123,8 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
                         )
                     },
                     openVideoPlayer = {
-                        navController.navigate(Screens.VideoPlayer())
+                        commonViewModel.clip = it
+                        navController.navigate(Screens.MovieDetails.withArgs(it.id))
                     },
                     onBackPressed = onBackPressed,
                     isComingBackFromDifferentScreen = isComingBackFromDifferentScreen,

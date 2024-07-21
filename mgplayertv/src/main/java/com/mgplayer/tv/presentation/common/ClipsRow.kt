@@ -43,6 +43,8 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,7 +54,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import com.mgplayer.tv.R
 import com.mgplayer.tv.presentation.screens.dashboard.rememberChildPadding
+import com.mgplayer.tv.presentation.screens.home.ImmersiveList
+import com.mgplayer.tv.presentation.utils.bringIntoViewIfChildrenAreFocused
 import com.mgtvapi.api.model.Clip
 
 enum class ItemDirection(val aspectRatio: Float) {
@@ -63,72 +68,38 @@ enum class ItemDirection(val aspectRatio: Float) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ClipsRow(
-    movieList: List<Clip>,
+    clipList: List<Clip>,
     modifier: Modifier = Modifier,
-    itemDirection: ItemDirection = ItemDirection.Vertical,
-    startPadding: Dp = rememberChildPadding().start,
-    endPadding: Dp = rememberChildPadding().end,
-    title: String? = null,
-    titleStyle: TextStyle = MaterialTheme.typography.headlineLarge.copy(
-        fontWeight = FontWeight.Medium,
-        fontSize = 30.sp
-    ),
-    showItemTitle: Boolean = true,
-    useVerticalImage: Boolean = false,
-    onMovieSelected: (movie: Clip) -> Unit = {}
-) {
-    val (lazyRow, firstItem) = remember { FocusRequester.createRefs() }
+    onClipClick: (movie: Clip) -> Unit = {},
+    gradientColor: Color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
 
-    Column(
-        modifier = modifier.focusGroup()
     ) {
-        if (title != null) {
-            Text(
-                text = title,
-                style = titleStyle,
-                modifier = Modifier
-                    .alpha(1f)
-                    .padding(start = startPadding, top = 16.dp, bottom = 16.dp)
-            )
-        }
-        AnimatedContent(
-            targetState = movieList,
-            label = "",
-        ) { movieState ->
-            LazyRow(
-                contentPadding = PaddingValues(
-                    start = startPadding,
-                    end = endPadding,
-                ),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                modifier = Modifier
-                    .focusRequester(lazyRow)
-                    .focusRestorer {
-                        firstItem
-                    }
-            ) {
-                itemsIndexed(movieState, key = { _, movie -> movie.id }) { index, movie ->
-                    val itemModifier = if (index == 0) {
-                        Modifier.focusRequester(firstItem)
-                    } else {
-                        Modifier
-                    }
-                    MoviesRowItem(
-                        modifier = itemModifier.weight(1f),
-                        index = index,
-                        itemDirection = itemDirection,
-                        onClipSelected = {
-                            lazyRow.saveFocusedChild()
-                            onMovieSelected(it)
-                        },
-                        clip = movie,
-                        showItemTitle = showItemTitle,
-                        useVerticalImage = useVerticalImage
-                    )
-                }
-            }
-        }
+//    val (lazyRow, firstItem) = remember { FocusRequester.createRefs() }
+    var isListFocused by remember { mutableStateOf(false) }
+    var selectedMovie by remember(clipList) { mutableStateOf(clipList.first()) }
+
+    val sectionTitle = if (isListFocused) {
+        null
+    } else {
+        stringResource(R.string.current_clips)
     }
+    ImmersiveList(
+        selectedClip = selectedMovie,
+        isListFocused = isListFocused,
+        gradientColor = gradientColor,
+        clipList = clipList,
+        sectionTitle = sectionTitle,
+        onClipClick = onClipClick,
+        onClipFocused = {
+            selectedMovie = it
+        },
+        onFocusChanged = {
+            isListFocused = it.hasFocus
+        },
+        modifier = modifier.bringIntoViewIfChildrenAreFocused(
+            PaddingValues(bottom = 116.dp)
+        )
+    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

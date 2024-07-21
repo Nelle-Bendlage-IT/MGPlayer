@@ -22,9 +22,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import androidx.tv.material3.WideClassicCard
 import com.mgplayer.tv.presentation.common.ErrorScreen
 import com.mgplayer.tv.presentation.common.Loading
 import com.mgplayer.tv.presentation.common.MovieCard
@@ -49,19 +53,21 @@ import com.mgtvapi.api.model.Clip
 import com.mgtvapi.viewModel.MagazineOverviewViewModel
 import org.koin.compose.koinInject
 
-object CategoryMovieListScreen {
-    const val CategoryIdBundleKey = "magazineName"
+object MagazineClipsListScreen {
+    const val MagazineIdBundleKey = "magazineName"
+    const val IsActiveKey="active"
 }
 
 @Composable
 fun MagazineClipsListScreen(
     onBackPressed: () -> Unit,
     onClipSelected: (Clip) -> Unit,
-    magazineName: String,
-    magazineOverviewViewModel: MagazineOverviewViewModel = koinInject<MagazineOverviewViewModel>()
+    magazineId: String,
+    magazineOverviewViewModel: MagazineOverviewViewModel = koinInject<MagazineOverviewViewModel>(),
+    isActive: Boolean,
 ) {
     LaunchedEffect(Unit) {
-        magazineOverviewViewModel.fetchMagazines()
+        magazineOverviewViewModel.fetchMagazine(magazineId, 40, 0)
     }
     val clips by magazineOverviewViewModel.magazineEpisodes.collectAsStateWithLifecycle()
 
@@ -76,10 +82,11 @@ fun MagazineClipsListScreen(
 
         is ViewState.Success -> {
             CategoryDetails(
-                magazineName = magazineName,
+                magazineName = s.data.first().projectTitle,
                 onBackPressed = onBackPressed,
                 onClipSelected = onClipSelected,
-                clips = s.data
+                clips = s.data,
+                isActive = isActive
             )
         }
     }
@@ -91,13 +98,14 @@ private fun CategoryDetails(
     clips: List<Clip>,
     onBackPressed: () -> Unit,
     onClipSelected: (Clip) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isActive: Boolean
 ) {
     val childPadding = rememberChildPadding()
     val isFirstItemVisible = remember { mutableStateOf(false) }
 
     BackHandler(onBack = onBackPressed)
-
+    val lazyListState = rememberLazyListState()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
@@ -111,16 +119,14 @@ private fun CategoryDetails(
                 vertical = childPadding.top.times(3.5f)
             )
         )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(6),
-            contentPadding = PaddingValues(bottom = JetStreamBottomListPadding)
-        ) {
+        LazyColumn(state = lazyListState) {
             itemsIndexed(
                 clips,
                 key = { _, clip ->
                     clip.id
                 }
             ) { index, clip ->
+                val img = if(isActive) clip.verticalImage() else clip.artworkUrl
                 MovieCard(
                     onClick = { onClipSelected(clip) },
                     modifier = Modifier
@@ -133,12 +139,13 @@ private fun CategoryDetails(
                         ),
                 ) {
                     PosterImage(
-                        posterURI = clip.artworkUrl,
+                        posterURI = img,
                         name = clip.episodeTitle,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
             }
         }
+
     }
 }

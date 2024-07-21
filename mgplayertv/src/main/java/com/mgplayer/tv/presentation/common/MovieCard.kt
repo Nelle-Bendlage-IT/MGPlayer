@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.tv.material3.Border
+import androidx.tv.material3.ClassicCard
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.StandardCardContainer
@@ -35,10 +36,11 @@ fun MovieCard(
     title: @Composable () -> Unit = {},
     image: @Composable BoxScope.() -> Unit,
 ) {
-    StandardCardContainer(
+    ClassicCard(
         modifier = modifier,
         title = title,
-        imageCard = {
+        onClick = onClick,
+        image = {
             Surface(
                 onClick = onClick,
                 shape = ClickableSurfaceDefaults.shape(JetStreamCardShape),

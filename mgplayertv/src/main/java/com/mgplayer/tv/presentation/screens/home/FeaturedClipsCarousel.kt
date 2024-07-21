@@ -171,7 +171,6 @@ private fun BoxScope.CarouselIndicator(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun CarouselItemForeground(
     clip: Clip,
@@ -199,21 +198,23 @@ private fun CarouselItemForeground(
                 ),
                 maxLines = 1
             )
-            Text(
-                text = clip.description,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurface.copy(
-                        alpha = 0.65f
+            clip.shortDescription?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface.copy(
+                            alpha = 0.65f
+                        ),
+                        shadow = Shadow(
+                            color = Color.Black.copy(alpha = 0.5f),
+                            offset = Offset(x = 2f, y = 4f),
+                            blurRadius = 2f
+                        )
                     ),
-                    shadow = Shadow(
-                        color = Color.Black.copy(alpha = 0.5f),
-                        offset = Offset(x = 2f, y = 4f),
-                        blurRadius = 2f
-                    )
-                ),
-                maxLines = 1,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+                    maxLines = 1,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
             AnimatedVisibility(
                 visible = isCarouselFocused,
                 content = {
@@ -248,7 +249,6 @@ private fun CarouselItemBackground(clip: Clip, modifier: Modifier = Modifier) {
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun WatchNowButton() {
     Button(
