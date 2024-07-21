@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.mgplayer.tv.ui.theme.AppTheme
+import com.mgplayer.tv.presentation.theme.AppTheme
 
 @Composable
 fun ThumbnailImageCard(
