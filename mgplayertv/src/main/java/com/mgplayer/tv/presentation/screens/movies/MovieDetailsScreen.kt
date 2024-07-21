@@ -38,7 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import com.google.jetstream.presentation.screens.movies.TitleValueText
 import com.mgplayer.tv.R
 import com.mgplayer.tv.presentation.common.ErrorScreen
 import com.mgplayer.tv.presentation.common.Loading
@@ -102,7 +101,7 @@ private fun Details(
     ) {
         item {
             MovieDetails(
-                movieDetails = clip,
+                clipDetails = clip,
                 goToMoviePlayer = goToMoviePlayer
             )
         }

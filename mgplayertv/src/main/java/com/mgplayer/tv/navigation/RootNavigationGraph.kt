@@ -17,11 +17,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.mgplayer.tv.presentation.screens.movies.MovieDetailsScreen
 import com.mgplayer.tv.presentation.screens.Screens
 import com.mgplayer.tv.presentation.screens.categories.MagazineClipsListScreen
 import com.mgplayer.tv.presentation.screens.dashboard.DashboardScreen
 import com.mgplayer.tv.presentation.screens.movies.ClipDetailsScreen
+import com.mgplayer.tv.presentation.screens.movies.MovieDetailsScreen
 import com.mgplayer.tv.presentation.screens.videoPlayer.VideoPlayerScreen
 import com.mgplayer.tv.ui.LoginScreen
 import com.mgtvapi.api.repository.MGTVApiRepository
@@ -55,8 +55,6 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
             navController = navController,
             startDestination = Screens.Dashboard(),
         ) {
-
-
             composable(
                 route = Screens.CategoryMovieList(),
                 enterTransition = { tabEnterTransition() },
@@ -133,20 +131,23 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
                     }
                 )
             }
-            composable(route = Screens.VideoPlayer()) {
+            composable(
+                route = Screens.VideoPlayer(),
+            ) {
                 VideoPlayerScreen(
                     onBackPressed = {
                         if (navController.navigateUp()) {
                             isComingBackFromDifferentScreen = true
                         }
-                    }
+                    },
+                    videoUrl = commonViewModel.file!!.url,
+                    clip = commonViewModel.clip!!
                 )
             }
         }
     } else {
         NavHost(
             navController = navController,
-            route = Routes.ROOT,
             startDestination = Routes.LOGIN,
         ) {
             composable(

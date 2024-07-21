@@ -26,7 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -54,7 +54,7 @@ import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
 import com.mgplayer.tv.presentation.screens.Screens
 import com.mgplayer.tv.R
-import com.mgplayer.tv.data.util.ContentDescription
+import com.mgplayer.tv.data.util.StringConstants
 import com.mgplayer.tv.presentation.theme.IconSize
 import com.mgplayer.tv.presentation.theme.JetStreamCardShape
 import com.mgplayer.tv.presentation.theme.LexendExa
@@ -152,8 +152,8 @@ private fun JetStreamLogo(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Default.PlayCircle,
-            contentDescription = ContentDescription.BrandLogoImage,
+            Icons.Default.PlayArrow,
+            contentDescription = StringConstants.Composable.ContentDescription.BrandLogoImage,
             modifier = Modifier
                 .padding(end = 4.dp)
                 .size(IconSize)

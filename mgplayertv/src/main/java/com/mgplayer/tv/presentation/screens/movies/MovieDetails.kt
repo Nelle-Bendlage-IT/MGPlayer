@@ -19,7 +19,6 @@ package com.mgplayer.tv.presentation.screens.movies
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,15 +50,21 @@ import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.google.jetstream.presentation.screens.movies.TitleValueText
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.mgplayer.tv.R
+import com.mgplayer.tv.data.util.StringConstants
 import com.mgplayer.tv.presentation.screens.dashboard.rememberChildPadding
-import com.google.jetstream.presentation.theme.JetStreamButtonShape
+import com.mgplayer.tv.presentation.theme.JetStreamButtonShape
+import com.mgtvapi.api.model.Clip
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MovieDetails(
-    movieDetails: MovieDetails,
+    clipDetails: Clip,
     goToMoviePlayer: () -> Unit
 ) {
     val childPadding = rememberChildPadding()
@@ -73,7 +78,7 @@ fun MovieDetails(
             .bringIntoViewRequester(bringIntoViewRequester)
     ) {
         MovieImageWithGradients(
-            movieDetails = movieDetails,
+            clipDetails = clipDetails,
             modifier = Modifier.fillMaxSize()
         )
 
@@ -82,25 +87,18 @@ fun MovieDetails(
             Column(
                 modifier = Modifier.padding(start = childPadding.start)
             ) {
-                MovieLargeTitle(movieTitle = movieDetails.name)
+                MovieLargeTitle(movieTitle = clipDetails.title)
 
                 Column(
                     modifier = Modifier.alpha(0.75f)
                 ) {
-                    MovieDescription(description = movieDetails.description)
+                    MovieDescription(description = clipDetails.description)
                     DotSeparatedRow(
                         modifier = Modifier.padding(top = 20.dp),
                         texts = listOf(
-                            movieDetails.pgRating,
-                            movieDetails.releaseDate,
-                            movieDetails.categories.joinToString(", "),
-                            movieDetails.duration
+                            LocalDate.parse(clipDetails.time.toString()).toString(),
+                            clipDetails.formatDuration(),
                         )
-                    )
-                    DirectorScreenplayMusicRow(
-                        director = movieDetails.director,
-                        screenplay = movieDetails.screenplay,
-                        music = movieDetails.music
                     )
                 }
                 WatchTrailerButton(
@@ -139,36 +137,6 @@ private fun WatchTrailerButton(
     }
 }
 
-@Composable
-private fun DirectorScreenplayMusicRow(
-    director: String,
-    screenplay: String,
-    music: String
-) {
-    Row(modifier = Modifier.padding(top = 32.dp)) {
-        TitleValueText(
-            modifier = Modifier
-                .padding(end = 32.dp)
-                .weight(1f),
-            title = stringResource(R.string.director),
-            value = director
-        )
-
-        TitleValueText(
-            modifier = Modifier
-                .padding(end = 32.dp)
-                .weight(1f),
-            title = stringResource(R.string.screenplay),
-            value = screenplay
-        )
-
-        TitleValueText(
-            modifier = Modifier.weight(1f),
-            title = stringResource(R.string.music),
-            value = music
-        )
-    }
-}
 
 @Composable
 private fun MovieDescription(description: String) {
@@ -196,17 +164,17 @@ private fun MovieLargeTitle(movieTitle: String) {
 
 @Composable
 private fun MovieImageWithGradients(
-    movieDetails: MovieDetails,
+    clipDetails: Clip,
     modifier: Modifier = Modifier,
     gradientColor: Color = MaterialTheme.colorScheme.surface,
 ) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current).data(movieDetails.posterUri)
+        model = ImageRequest.Builder(LocalContext.current).data(clipDetails.artworkUrl)
             .crossfade(true).build(),
         contentDescription = StringConstants
             .Composable
             .ContentDescription
-            .moviePoster(movieDetails.name),
+            .moviePoster(clipDetails.projectTitle),
         contentScale = ContentScale.Crop,
         modifier = modifier.drawWithContent {
             drawContent()

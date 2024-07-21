@@ -35,9 +35,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mgplayer.tv.data.util.StringConstants
+import com.mgplayer.tv.presentation.common.ClipsRow
 import com.mgplayer.tv.presentation.common.ErrorScreen
 import com.mgplayer.tv.presentation.common.Loading
-import com.mgplayer.tv.presentation.common.MoviesRow
 import com.mgplayer.tv.presentation.screens.dashboard.rememberChildPadding
 import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Clip
@@ -120,7 +120,7 @@ private fun Catalog(
     ) {
 
         item(contentType = "FeaturedMoviesCarousel") {
-            FeaturedMoviesCarousel(
+            FeaturedClipsCarousel(
                 movies = featuredClips,
                 padding = childPadding,
                 goToVideoPlayer = goToVideoPlayer,
@@ -133,8 +133,8 @@ private fun Catalog(
                  */
             )
         }
-        item(contentType = "Top10MoviesList") {
-            Top10MoviesList(
+        item(contentType = "RecentlyWatchedList") {
+            RecentlyWatchedList(
                 clipList = top10Clips,
                 onClipClick = onClipClick,
                 modifier = Modifier.onFocusChanged {
@@ -143,11 +143,14 @@ private fun Catalog(
             )
         }
         item(contentType = "MoviesRow") {
-            MoviesRow(
-                modifier = Modifier.padding(top = 16.dp),
+            ClipsRow(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .height(250.dp),
                 movieList = trendingClips,
                 title = StringConstants.Composable.HomeScreenTrendingTitle,
-                onMovieSelected = onClipClick
+                onMovieSelected = onClipClick,
+                useVerticalImage = true
             )
         }
     }

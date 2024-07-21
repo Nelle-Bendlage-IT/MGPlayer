@@ -46,15 +46,10 @@ enum class VideoPlayerMediaTitleType { AD, LIVE, DEFAULT }
 fun VideoPlayerMediaTitle(
     title: String,
     secondaryText: String,
-    tertiaryText: String,
     modifier: Modifier = Modifier,
     type: VideoPlayerMediaTitleType = VideoPlayerMediaTitleType.DEFAULT
 ) {
-    val subTitle = buildString {
-        append(secondaryText)
-        if (secondaryText.isNotEmpty() && tertiaryText.isNotEmpty()) append(" • ")
-        append(tertiaryText)
-    }
+
     Column(modifier.fillMaxWidth()) {
         Text(title, style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(4.dp))
@@ -92,7 +87,7 @@ fun VideoPlayerMediaTitle(
             }
 
             Text(
-                text = subTitle,
+                text = secondaryText,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.alignByBaseline()
             )
@@ -109,7 +104,6 @@ private fun VideoPlayerMediaTitlePreviewSeries() {
             VideoPlayerMediaTitle(
                 title = "True Detective",
                 secondaryText = "S1E5",
-                tertiaryText = "The Secret Fate Of All Life",
                 type = VideoPlayerMediaTitleType.DEFAULT
             )
         }
@@ -125,7 +119,6 @@ private fun VideoPlayerMediaTitlePreviewLive() {
             VideoPlayerMediaTitle(
                 title = "MacLaren Reveal Their 2022 Car: The MCL36",
                 secondaryText = "Formula 1",
-                tertiaryText = "54K watching now",
                 type = VideoPlayerMediaTitleType.LIVE
             )
         }
@@ -141,7 +134,6 @@ private fun VideoPlayerMediaTitlePreviewAd() {
             VideoPlayerMediaTitle(
                 title = "Samsung Galaxy Note20 | Ultra 5G",
                 secondaryText = "Get the most powerful Note yet",
-                tertiaryText = "",
                 type = VideoPlayerMediaTitleType.AD
             )
         }

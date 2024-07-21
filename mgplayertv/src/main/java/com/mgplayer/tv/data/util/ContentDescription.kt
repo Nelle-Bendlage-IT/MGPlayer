@@ -16,34 +16,6 @@
 package com.mgplayer.tv.data.util
 
 object StringConstants {
-    object Movie {
-        const val StatusReleased = "Released"
-        const val BudgetDefault = "$10M"
-        const val WorldWideGrossDefault = "$20M"
-
-        object Reviewer {
-            const val FreshTomatoes = "Fresh Tomatoes"
-            const val FreshTomatoesImageUrl = ""
-            const val ReviewerName = "Rater"
-            const val ImageUrl = ""
-            const val DefaultCount = "1.8M"
-            const val DefaultRating = "9.2"
-        }
-    }
-
-    object Assets {
-        const val Top250Movies = "movies.json"
-        const val MostPopularMovies = "movies.json"
-        const val InTheaters = "movies.json"
-        const val MostPopularTVShows = "movies.json"
-        const val MovieCategories = "movieCategories.json"
-        const val MovieCast = "movieCast.json"
-    }
-
-    object Exceptions {
-        const val UnknownException = "Unknown Exception!"
-        const val InvalidCategoryId = "Invalid category ID!"
-    }
 
     object Composable {
         object ContentDescription {
@@ -64,8 +36,6 @@ object StringConstants {
         const val HomeScreenNowPlayingMoviesTitle = "Now Playing Movies"
         const val PopularFilmsThisWeekTitle = "Popular films this week"
         const val BingeWatchDramasTitle = "Bingewatch dramas"
-        fun movieDetailsScreenSimilarTo(name: String) = "Similar to $name"
-        fun reviewCount(count: String) = "$count reviews"
 
 
         const val VideoPlayerControlPlaylistButton = "Playlist Button"

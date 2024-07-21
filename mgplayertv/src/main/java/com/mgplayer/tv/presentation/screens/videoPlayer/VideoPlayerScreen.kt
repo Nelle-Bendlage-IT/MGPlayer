@@ -22,11 +22,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesomeMotion
 import androidx.compose.material.icons.filled.ClosedCaption
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,34 +40,34 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaItem.RequestMetadata
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerControlsIcon
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerMainFrame
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerControlsIcon
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMainFrame
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerOverlay
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerPulse
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerPulse.Type.BACK
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerPulse.Type.FORWARD
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerPulseState
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerSeeker
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerState
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.rememberVideoPlayerPulseState
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.rememberVideoPlayerState
+import com.mgplayer.tv.data.util.StringConstants
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMediaTitle
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMediaTitleType
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerOverlay
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerPulse
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerPulse.Type.BACK
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerPulse.Type.FORWARD
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerPulseState
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerSeeker
-import com.google.jetstream.presentation.screens.videoPlayer.components.VideoPlayerState
-import com.google.jetstream.presentation.screens.videoPlayer.components.rememberVideoPlayerPulseState
-import com.google.jetstream.presentation.screens.videoPlayer.components.rememberVideoPlayerState
-import com.mgplayer.tv.presentation.common.ErrorScreen
-import com.mgplayer.tv.presentation.common.Loading
 import com.mgplayer.tv.presentation.utils.handleDPadKeyEvents
-import kotlin.time.Duration.Companion.milliseconds
+import com.mgtvapi.api.model.Clip
 import kotlinx.coroutines.delay
-import org.koin.compose.koinInject
+import kotlin.time.Duration.Companion.milliseconds
 
 object VideoPlayerScreen {
     const val MovieIdBundleKey = "movieId"
@@ -78,58 +77,47 @@ object VideoPlayerScreen {
  * [Work in progress] A composable screen for playing a video.
  *
  * @param onBackPressed The callback to invoke when the user presses the back button.
- * @param videoPlayerScreenViewModel The view model for the video player screen.
  */
 @Composable
 fun VideoPlayerScreen(
     onBackPressed: () -> Unit,
-    videoPlayerScreenViewModel: VideoPlayerScreenViewModel = koinInject<VideoPlayerScreenViewModel>()
+    videoUrl: String,
+    clip: Clip
 ) {
-    val uiState by videoPlayerScreenViewModel.uiState.collectAsStateWithLifecycle()
 
-    // TODO: Handle Loading & Error states
-    when (val s = uiState) {
-        is VideoPlayerScreenUiState.Loading -> {
-            Loading()
-        }
-        is VideoPlayerScreenUiState.Error -> {
-            ErrorScreen(modifier = Modifier.fillMaxSize())
-        }
-        is VideoPlayerScreenUiState.Done -> {
-            VideoPlayerScreenContent(
-                movieDetails = s.movieDetails,
-                onBackPressed = onBackPressed
-            )
-        }
-    }
+    VideoPlayerScreenContent(
+        onBackPressed = onBackPressed,
+        videoUrl = videoUrl,
+        clip = clip
+    )
 }
+
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
-fun VideoPlayerScreenContent(movieDetails: MovieDetails, onBackPressed: () -> Unit) {
+fun VideoPlayerScreenContent(
+    clip: Clip,
+    videoUrl: String,
+    onBackPressed: () -> Unit
+) {
     val context = LocalContext.current
     val videoPlayerState = rememberVideoPlayerState(hideSeconds = 4)
 
     // TODO: Move to ViewModel for better reuse
     val exoPlayer = rememberExoPlayer(context)
-    LaunchedEffect(exoPlayer, movieDetails) {
+    LaunchedEffect(exoPlayer, clip) {
         exoPlayer.setMediaItem(
             MediaItem.Builder()
-                .setUri(movieDetails.videoUri)
-                .setSubtitleConfigurations(
-                    if (movieDetails.subtitleUri == null) {
-                        emptyList()
-                    } else {
-                        listOf(
-                            MediaItem.SubtitleConfiguration
-                                .Builder(Uri.parse(movieDetails.subtitleUri))
-                                .setMimeType("application/vtt")
-                                .setLanguage("en")
-                                .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                                .build()
-                        )
-                    }
-                ).build()
+                .setMediaId(clip.id)
+                .setUri(videoUrl)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(clip.title)
+                        .setSubtitle(clip.projectTitle)
+                        .setArtworkUri(Uri.parse(clip.artworkUrl)).build(),
+                )
+                .setRequestMetadata(RequestMetadata.Builder().build())
+                .build()
         )
         exoPlayer.prepare()
     }
@@ -176,7 +164,7 @@ fun VideoPlayerScreenContent(movieDetails: MovieDetails, onBackPressed: () -> Un
             subtitles = { /* TODO Implement subtitles */ },
             controls = {
                 VideoPlayerControls(
-                    movieDetails,
+                    clip,
                     isPlaying,
                     contentCurrentPosition,
                     exoPlayer,
@@ -190,7 +178,7 @@ fun VideoPlayerScreenContent(movieDetails: MovieDetails, onBackPressed: () -> Un
 
 @Composable
 fun VideoPlayerControls(
-    movieDetails: MovieDetails,
+    movieDetails: Clip,
     isPlaying: Boolean,
     contentCurrentPosition: Long,
     exoPlayer: ExoPlayer,
@@ -208,9 +196,8 @@ fun VideoPlayerControls(
     VideoPlayerMainFrame(
         mediaTitle = {
             VideoPlayerMediaTitle(
-                title = movieDetails.name,
-                secondaryText = movieDetails.releaseDate,
-                tertiaryText = movieDetails.director,
+                title = movieDetails.title,
+                secondaryText = movieDetails.releaseDateFormatted(),
                 type = VideoPlayerMediaTitleType.DEFAULT
             )
         },
@@ -220,7 +207,7 @@ fun VideoPlayerControls(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 VideoPlayerControlsIcon(
-                    icon = Icons.Default.AutoAwesomeMotion,
+                    icon = Icons.Default.Menu,
                     state = state,
                     isPlaying = isPlaying,
                     contentDescription = StringConstants
