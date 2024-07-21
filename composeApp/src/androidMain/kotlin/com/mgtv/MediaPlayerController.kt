@@ -74,7 +74,7 @@ class MediaPlayerController(
                         val progress = 100.0 * _currentPosition / _duration
                         onPlaySendProgress(progress.toInt())
                     }
-                    delay(15.seconds)
+                    delay(10.seconds)
                 }
             }
 
