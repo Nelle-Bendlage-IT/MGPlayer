@@ -84,5 +84,7 @@ dependencies {
     implementation(libs.coil.network.ktor)
     implementation(libs.bundles.androidx.navigation)
     implementation(libs.kotlinx.couroutines.core)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.kotlinx.datetime)
 
 }
