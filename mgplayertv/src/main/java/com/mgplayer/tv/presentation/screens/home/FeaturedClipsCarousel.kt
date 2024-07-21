@@ -84,7 +84,7 @@ val CarouselSaver = Saver<CarouselState, Int>(
     ExperimentalTvMaterial3Api::class
 )
 @Composable
-fun FeaturedMoviesCarousel(
+fun FeaturedClipsCarousel(
     movies: List<Clip>,
     padding: Padding,
     goToVideoPlayer: (movie: Clip) -> Unit,

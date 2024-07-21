@@ -56,16 +56,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.jetstream.data.entities.Movie
 import com.mgplayer.tv.presentation.screens.Screens
-import com.mgplayer.tv.presentation.screens.categories.CategoriesScreen
-import com.google.jetstream.presentation.screens.favourites.FavouritesScreen
-import com.mgplayer.tv.presentation.screens.home.HomeScreen
-import com.mgplayer.tv.presentation.screens.movies.MoviesScreen
-import com.google.jetstream.presentation.screens.profile.ProfileScreen
-import com.google.jetstream.presentation.screens.search.SearchScreen
-import com.google.jetstream.presentation.screens.shows.ShowsScreen
 import com.mgplayer.tv.presentation.screens.categories.MagazineOverviewScreen
+import com.mgplayer.tv.presentation.screens.home.HomeScreen
 import com.mgplayer.tv.presentation.utils.Padding
 import com.mgtvapi.api.model.Clip
 
@@ -195,7 +188,7 @@ fun DashboardScreen(
             updateTopBarVisibility = { isTopBarVisible = it },
             isTopBarVisible = isTopBarVisible,
             navController = navController,
-            modifier = Modifier.offset(y = navHostTopPaddingDp),
+            modifier = Modifier.run { offset(y = navHostTopPaddingDp) },
         )
     }
 }
@@ -224,7 +217,7 @@ private fun BackPressHandledArea(
 private fun Body(
     openCategoryMovieList: (categoryId: String) -> Unit,
     openMovieDetailsScreen: (movieId: String) -> Unit,
-    openVideoPlayer: (Movie) -> Unit,
+    openVideoPlayer: (Clip) -> Unit,
     updateTopBarVisibility: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
@@ -235,12 +228,9 @@ private fun Body(
         navController = navController,
         startDestination = Screens.Home(),
     ) {
-        composable(Screens.Profile()) {
-            ProfileScreen()
-        }
         composable(Screens.Home()) {
             HomeScreen(
-                onMovieClick = { selectedMovie ->
+                onClipClick = { selectedMovie ->
                     openMovieDetailsScreen(selectedMovie.id)
                 },
                 goToVideoPlayer = openVideoPlayer,
@@ -251,33 +241,6 @@ private fun Body(
         composable(Screens.Categories()) {
             MagazineOverviewScreen(
                 onCategoryClick = openCategoryMovieList,
-                onScroll = updateTopBarVisibility
-            )
-        }
-        composable(Screens.Movies()) {
-            MoviesScreen(
-                onMovieClick = { movie -> openMovieDetailsScreen(movie.id) },
-                onScroll = updateTopBarVisibility,
-                isTopBarVisible = isTopBarVisible
-            )
-        }
-        composable(Screens.Shows()) {
-            ShowsScreen(
-                onTVShowClick = { movie -> openMovieDetailsScreen(movie.id) },
-                onScroll = updateTopBarVisibility,
-                isTopBarVisible = isTopBarVisible
-            )
-        }
-        composable(Screens.Favourites()) {
-            FavouritesScreen(
-                onMovieClick = openMovieDetailsScreen,
-                onScroll = updateTopBarVisibility,
-                isTopBarVisible = isTopBarVisible
-            )
-        }
-        composable(Screens.Search()) {
-            SearchScreen(
-                onMovieClick = { movie -> openMovieDetailsScreen(movie.id) },
                 onScroll = updateTopBarVisibility
             )
         }

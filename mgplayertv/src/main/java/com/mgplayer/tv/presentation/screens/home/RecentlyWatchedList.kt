@@ -58,7 +58,7 @@ import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.ProgressClip
 
 @Composable
-fun Top10MoviesList(
+fun RecentlyWatchedList(
     clipList: List<ProgressClip>,
     modifier: Modifier = Modifier,
     gradientColor: Color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
@@ -131,10 +131,9 @@ private fun ImmersiveList(
                 itemDirection = ItemDirection.Horizontal,
                 title = sectionTitle,
                 showItemTitle = !isListFocused,
-                showIndexOverImage = true,
                 onClipSelected = onClipClick,
                 onClipFocused = onClipFocused,
-                modifier = Modifier.onFocusChanged(onFocusChanged)
+                modifier = Modifier.onFocusChanged(onFocusChanged).height(150.dp)
             )
         }
     }

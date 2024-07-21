@@ -43,9 +43,6 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,7 +62,7 @@ enum class ItemDirection(val aspectRatio: Float) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MoviesRow(
+fun ClipsRow(
     movieList: List<Clip>,
     modifier: Modifier = Modifier,
     itemDirection: ItemDirection = ItemDirection.Vertical,
@@ -77,7 +74,7 @@ fun MoviesRow(
         fontSize = 30.sp
     ),
     showItemTitle: Boolean = true,
-    showIndexOverImage: Boolean = false,
+    useVerticalImage: Boolean = false,
     onMovieSelected: (movie: Clip) -> Unit = {}
 ) {
     val (lazyRow, firstItem) = remember { FocusRequester.createRefs() }
@@ -126,7 +123,7 @@ fun MoviesRow(
                         },
                         clip = movie,
                         showItemTitle = showItemTitle,
-                        showIndexOverImage = showIndexOverImage
+                        useVerticalImage = useVerticalImage
                     )
                 }
             }
@@ -148,7 +145,7 @@ fun ImmersiveListMoviesRow(
         fontSize = 30.sp
     ),
     showItemTitle: Boolean = true,
-    showIndexOverImage: Boolean = false,
+    useVerticalImage: Boolean = false,
     onClipSelected: (Clip) -> Unit = {},
     onClipFocused: (Clip) -> Unit = {}
 ) {
@@ -202,7 +199,7 @@ fun ImmersiveListMoviesRow(
                         onClipFocused = onClipFocused,
                         clip = movie,
                         showItemTitle = showItemTitle,
-                        showIndexOverImage = showIndexOverImage
+                        useVerticalImage = useVerticalImage
                     )
                 }
             }
@@ -217,7 +214,7 @@ private fun MoviesRowItem(
     clip: Clip,
     onClipSelected: (Clip) -> Unit,
     showItemTitle: Boolean,
-    showIndexOverImage: Boolean,
+    useVerticalImage: Boolean,
     modifier: Modifier = Modifier,
     itemDirection: ItemDirection = ItemDirection.Vertical,
     onClipFocused: (Clip) -> Unit = {},
@@ -237,7 +234,7 @@ private fun MoviesRowItem(
             .onFocusChanged {
                 isFocused = it.isFocused
                 if (it.isFocused) {
-                    onClipFocused(clip )
+                    onClipFocused(clip)
                 }
             }
             .focusProperties {
@@ -251,9 +248,8 @@ private fun MoviesRowItem(
     ) {
         MoviesRowItemImage(
             modifier = Modifier.aspectRatio(itemDirection.aspectRatio),
-            showIndexOverImage = showIndexOverImage,
+            useVerticalImage = useVerticalImage,
             clip = clip,
-            index = index
         )
     }
 }
@@ -261,42 +257,22 @@ private fun MoviesRowItem(
 @Composable
 private fun MoviesRowItemImage(
     clip: Clip,
-    showIndexOverImage: Boolean,
-    index: Int,
+    useVerticalImage: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val imageURL = if (useVerticalImage)
+        clip.verticalImage()
+    else clip.artworkUrl
     Box(contentAlignment = Alignment.CenterStart) {
         PosterImage(
-            posterURI = clip.artworkUrl,
+            posterURI = imageURL,
             name = clip.projectTitle,
             modifier = modifier
                 .fillMaxWidth()
                 .drawWithContent {
                     drawContent()
-                    if (showIndexOverImage) {
-                        drawRect(
-                            color = Color.Black.copy(
-                                alpha = 0.1f
-                            )
-                        )
-                    }
                 },
         )
-        if (showIndexOverImage) {
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = "#${index.inc()}",
-                style = MaterialTheme.typography.displayLarge
-                    .copy(
-                        shadow = Shadow(
-                            offset = Offset(0.5f, 0.5f),
-                            blurRadius = 5f
-                        ),
-                        color = Color.White
-                    ),
-                fontWeight = FontWeight.SemiBold
-            )
-        }
     }
 }
 

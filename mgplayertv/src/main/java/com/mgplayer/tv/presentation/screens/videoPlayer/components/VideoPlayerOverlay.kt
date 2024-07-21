@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.jetstream.presentation.screens.videoPlayer.components
+package com.mgplayer.tv.presentation.screens.videoPlayer.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -40,7 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.jetstream.presentation.theme.JetStreamTheme
+import com.mgplayer.tv.presentation.theme.AppTheme
 
 /**
  * Handles the visibility and animation of the controls.
@@ -121,7 +121,7 @@ fun CinematicBackground(modifier: Modifier = Modifier) {
 @Preview(device = "id:tv_4k")
 @Composable
 private fun VideoPlayerOverlayPreview() {
-    JetStreamTheme {
+    AppTheme {
         Box(Modifier.fillMaxSize()) {
             VideoPlayerOverlay(
                 modifier = Modifier.align(Alignment.BottomCenter),

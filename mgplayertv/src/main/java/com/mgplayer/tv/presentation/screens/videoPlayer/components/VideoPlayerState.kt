@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.jetstream.presentation.screens.videoPlayer.components
+package com.mgplayer.tv.presentation.screens.videoPlayer.components
 
 import androidx.annotation.IntRange
 import androidx.compose.runtime.Composable

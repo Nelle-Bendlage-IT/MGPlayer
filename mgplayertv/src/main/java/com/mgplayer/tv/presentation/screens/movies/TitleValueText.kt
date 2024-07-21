@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.jetstream.presentation.screens.movies
+package com.mgplayer.tv.presentation.screens.movies
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
@@ -25,7 +25,6 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TitleValueText(
     modifier: Modifier = Modifier,

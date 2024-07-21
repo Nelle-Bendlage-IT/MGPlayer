@@ -40,13 +40,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Text
-import com.google.jetstream.presentation.screens.categories.CategoriesScreenUiState
-import com.google.jetstream.presentation.screens.categories.CategoriesScreenViewModel
 import com.mgplayer.tv.presentation.common.ErrorScreen
 import com.mgplayer.tv.presentation.common.Loading
 import com.mgplayer.tv.presentation.common.MovieCard

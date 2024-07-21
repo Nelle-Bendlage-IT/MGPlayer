@@ -50,7 +50,7 @@ import com.mgtvapi.viewModel.MagazineOverviewViewModel
 import org.koin.compose.koinInject
 
 object CategoryMovieListScreen {
-    const val CategoryIdBundleKey = "categoryId"
+    const val CategoryIdBundleKey = "magazineName"
 }
 
 @Composable

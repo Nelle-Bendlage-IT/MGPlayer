@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.jetstream.presentation.screens.videoPlayer.components
+package com.mgplayer.tv.presentation.screens.videoPlayer.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

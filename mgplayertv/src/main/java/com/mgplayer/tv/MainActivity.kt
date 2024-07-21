@@ -14,12 +14,21 @@ import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.disk.DiskCache
+import coil3.request.CachePolicy
+import coil3.request.crossfade
 import com.mgplayer.tv.navigation.RootNavigationGraph
 import com.mgplayer.tv.presentation.theme.AppTheme
 import com.mgtvapi.common.mgtvApiSharedModule
+import okio.FileSystem
 import org.koin.compose.KoinApplication
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalCoilApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,6 +38,9 @@ class MainActivity : ComponentActivity() {
             {
                 val navController = rememberNavController()
                 AppTheme {
+                    setSingletonImageLoaderFactory { context ->
+                        getAsyncImageLoader(context)
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -50,7 +62,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+fun getAsyncImageLoader(context: PlatformContext) =
+    ImageLoader.Builder(context).diskCachePolicy(CachePolicy.ENABLED)
+        .networkCachePolicy(CachePolicy.ENABLED).diskCache {
+            newDiskCache()
+        }.crossfade(true).build()
 
+fun newDiskCache(): DiskCache {
+    return DiskCache.Builder().directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
+        .maxSizeBytes(512L * 1024 * 1024) // 512MB
+        .build()
+}
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
