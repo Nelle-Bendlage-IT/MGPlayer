@@ -107,7 +107,7 @@ class MGTVApiRepositoryImpl(
 
     override suspend fun getRecentlyWatched(): ProgressResponse {
         return try {
-            apiService.getRecentlyWatched()
+            apiService.getRecentlyWatched(tokenManager.email!!, tokenManager.password!!)
         } catch (e: Exception) {
             Logger.e("getRecentlyWatched", e)
             throw Exceptions.UnknownErrorException(e.message)

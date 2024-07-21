@@ -2,12 +2,16 @@ package com.mgtvapi.api.model
 
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 data class ProgressResponse(
     val ok: Boolean,
     val progress: List<ProgressClip>,
 )
 
+@Serializable
 data class ProgressClip(
     val id: String,
     val clip: Clip,
@@ -18,5 +22,5 @@ data class ProgressClip(
     val remainingPerc: Long,
     @SerialName("remaining_stamp")
     val remainingStamp: String,
-    val lastAccessed: Instant,
+    val lastAccessed: Long,
 )

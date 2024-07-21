@@ -10,6 +10,7 @@ import com.mgtvapi.api.model.WatchResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.cookies.cookies
+import io.ktor.client.request.basicAuth
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -94,9 +95,11 @@ class MGTVApiRemoteService(
         //return data.status
     }
 
-    suspend fun getRecentlyWatched(): ProgressResponse {
-        val data = client.get("$BASE_URL/api/v2/feed/progress/recent")
-
+    suspend fun getRecentlyWatched(username: String, password: String): ProgressResponse {
+        val data = client.get("$BASE_URL/api/v2/feed/progress/recent") {
+            basicAuth(username, password)
+        }
+        Logger.d(data.body<String>().toString(), tag = "PROGRESS")
         return data.body<ProgressResponse>()
     }
 }
