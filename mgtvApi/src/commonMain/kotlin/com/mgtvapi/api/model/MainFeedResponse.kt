@@ -3,6 +3,12 @@ package com.mgtvapi.api.model
 import com.mgtvapi.Parcelable
 import com.mgtvapi.Parcelize
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -62,7 +68,8 @@ data class Clip(
         return "$hoursPart$minutesPart".trim()
     }
 
-    fun releaseDateFormatted(): String = Instant.fromEpochSeconds(time).toString()
+    @OptIn(FormatStringsInDatetimeFormats::class)
+    fun releaseDateFormatted(): String = Instant.fromEpochSeconds(time).toLocalDateTime(TimeZone.currentSystemDefault()).date.format(LocalDate.Format { byUnicodePattern("dd.MM.yyyy") })
 
     fun verticalImage(): String = image.replace(id, "${id}_510")
 
@@ -90,5 +97,6 @@ data class Participant(
     val name: String,
     val img: String,
 ) : Parcelable {
-    fun getParticipantPicture(): String = "https://massengeschmack.tv/$img"
+    fun getParticipantPicture(): String =
+        if (img.contains("dl.massengeschmack.tv")) "https://$img" else "https://massengeschmack.tv/$img"
 }

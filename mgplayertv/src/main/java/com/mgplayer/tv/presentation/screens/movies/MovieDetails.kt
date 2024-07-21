@@ -19,6 +19,7 @@ package com.mgplayer.tv.presentation.screens.movies
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -59,7 +60,6 @@ import com.mgplayer.tv.presentation.screens.dashboard.rememberChildPadding
 import com.mgplayer.tv.presentation.theme.JetStreamButtonShape
 import com.mgtvapi.api.model.Clip
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -96,12 +96,12 @@ fun MovieDetails(
                     DotSeparatedRow(
                         modifier = Modifier.padding(top = 20.dp),
                         texts = listOf(
-                            LocalDate.parse(clipDetails.time.toString()).toString(),
+                            clipDetails.releaseDateFormatted(),
                             clipDetails.formatDuration(),
                         )
                     )
                 }
-                WatchTrailerButton(
+                WatchButton(
                     modifier = Modifier.onFocusChanged {
                         if (it.isFocused) {
                             coroutineScope.launch { bringIntoViewRequester.bringIntoView() }
@@ -115,7 +115,7 @@ fun MovieDetails(
 }
 
 @Composable
-private fun WatchTrailerButton(
+private fun WatchButton(
     modifier: Modifier = Modifier,
     goToMoviePlayer: () -> Unit
 ) {
@@ -147,7 +147,6 @@ private fun MovieDescription(description: String) {
             fontWeight = FontWeight.Normal
         ),
         modifier = Modifier.padding(top = 8.dp),
-        maxLines = 2
     )
 }
 

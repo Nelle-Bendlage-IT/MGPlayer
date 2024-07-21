@@ -20,28 +20,16 @@ object StringConstants {
     object Composable {
         object ContentDescription {
             fun moviePoster(movieName: String) = "Movie poster of $movieName"
-            fun image(imageName: String) = "image of $imageName"
             const val MoviesCarousel = "Movies Carousel"
-            const val UserAvatar = "User Profile Button"
-            const val DashboardSearchButton = "Dashboard Search Button"
             const val BrandLogoImage = "Brand Logo Image"
-            const val FilterSelected = "Filter Selected"
-            fun reviewerName(name: String) = "$name's logo"
         }
 
-        const val CategoryDetailsFailureSubject = "category details"
-        const val MoviesFailureSubject = "movies"
-        const val MovieDetailsFailureSubject = "movie details"
         const val HomeScreenTrendingTitle = "Aktuelle Folgen"
-        const val HomeScreenNowPlayingMoviesTitle = "Now Playing Movies"
-        const val PopularFilmsThisWeekTitle = "Popular films this week"
-        const val BingeWatchDramasTitle = "Bingewatch dramas"
 
-
+        const val CastAndCrewPlaceHolder  = ""
         const val VideoPlayerControlPlaylistButton = "Playlist Button"
         const val VideoPlayerControlClosedCaptionsButton = "Playlist Button"
         const val VideoPlayerControlSettingsButton = "Playlist Button"
         const val VideoPlayerControlPlayPauseButton = "Playlist Button"
-        const val VideoPlayerControlForward = "Fast forward 10 seconds"
     }
 }

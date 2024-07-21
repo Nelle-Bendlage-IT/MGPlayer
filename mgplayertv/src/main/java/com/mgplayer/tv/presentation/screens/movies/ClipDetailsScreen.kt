@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,23 +45,26 @@ import com.mgplayer.tv.presentation.common.Loading
 import com.mgplayer.tv.presentation.screens.dashboard.rememberChildPadding
 import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Clip
+import com.mgtvapi.api.model.File
 import com.mgtvapi.viewModel.CommonViewModel
 import kotlinx.datetime.LocalDate
 import org.koin.compose.koinInject
 
-object MovieDetailsScreen {
-    const val MovieIdBundleKey = "movieId"
+object ClipDetailsScreen {
+    const val ClipIdBundleKey = "clipId"
 }
 
 @Composable
 fun ClipDetailsScreen(
-    goToMoviePlayer: () -> Unit,
+    clipId: String,
+    goToMoviePlayer: (File) -> Unit,
     onBackPressed: () -> Unit,
-    refreshScreenWithNewMovie: (Clip) -> Unit,
     commonViewModel: CommonViewModel = koinInject<CommonViewModel>()
 ) {
     val clipData by commonViewModel.clipData.collectAsStateWithLifecycle()
-
+    LaunchedEffect(clipId) {
+        commonViewModel.getClipFiles(clipId)
+    }
     when (val s = clipData) {
         is ViewState.Loading, ViewState.Empty -> {
             Loading()
@@ -71,11 +75,11 @@ fun ClipDetailsScreen(
         }
 
         is ViewState.Success -> {
+
             Details(
                 clip = s.data.clip,
-                goToMoviePlayer = goToMoviePlayer,
+                goToMoviePlayer = { goToMoviePlayer(s.data.stream.media.files.first()) },
                 onBackPressed = onBackPressed,
-                refreshScreenWithNewMovie = refreshScreenWithNewMovie,
                 modifier = Modifier
                     .fillMaxSize()
                     .animateContentSize()
@@ -89,7 +93,6 @@ private fun Details(
     clip: Clip,
     goToMoviePlayer: () -> Unit,
     onBackPressed: () -> Unit,
-    refreshScreenWithNewMovie: (Clip) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val childPadding = rememberChildPadding()
@@ -134,23 +137,23 @@ private fun Details(
                     .background(MaterialTheme.colorScheme.onSurface)
             )
         }
-
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = childPadding.start),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                val itemModifier = Modifier.width(192.dp)
-
-                TitleValueText(
-                    modifier = itemModifier,
-                    title = stringResource(R.string.status),
-                    value = LocalDate.parse(clip.time.toString()).toString()
-                )
-            }
-        }
+//
+//        item {
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = childPadding.start),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//            ) {
+//                val itemModifier = Modifier.width(192.dp)
+//
+//                TitleValueText(
+//                    modifier = itemModifier,
+//                    title = stringResource(R.string.status),
+//                    value = clip.releaseDateFormatted()
+//                )
+//            }
+//        }
     }
 }
 

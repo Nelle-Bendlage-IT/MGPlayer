@@ -142,15 +142,13 @@ private fun Catalog(
                 },
             )
         }
-        item(contentType = "MoviesRow") {
+        item(contentType = "ClipsRow") {
             ClipsRow(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .height(250.dp),
-                movieList = trendingClips,
-                title = StringConstants.Composable.HomeScreenTrendingTitle,
-                onMovieSelected = onClipClick,
-                useVerticalImage = true
+                    .padding(top = 16.dp),
+                //.height(250.dp),
+                clipList = trendingClips,
+                onClipClick = onClipClick,
             )
         }
     }

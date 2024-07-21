@@ -16,11 +16,9 @@
 
 package com.mgplayer.tv.presentation.screens
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.mgplayer.tv.presentation.screens.categories.CategoryMovieListScreen
-import com.mgplayer.tv.presentation.screens.movies.MovieDetailsScreen
+import com.mgplayer.tv.presentation.screens.categories.MagazineClipsListScreen
+import com.mgplayer.tv.presentation.screens.movies.ClipDetailsScreen
 import com.mgplayer.tv.presentation.screens.videoPlayer.VideoPlayerScreen
 
 enum class Screens(
@@ -31,8 +29,8 @@ enum class Screens(
     Profile,
     Home(isTabItem = true),
     Categories(isTabItem = true),
-    CategoryMovieList(listOf(CategoryMovieListScreen.CategoryIdBundleKey)),
-    MovieDetails(listOf(MovieDetailsScreen.MovieIdBundleKey)),
+    CategoryMovieList(listOf(MagazineClipsListScreen.MagazineIdBundleKey, MagazineClipsListScreen.IsActiveKey)),
+    MovieDetails(listOf(ClipDetailsScreen.ClipIdBundleKey)),
     Dashboard,
     VideoPlayer(listOf(VideoPlayerScreen.MovieIdBundleKey));
 
