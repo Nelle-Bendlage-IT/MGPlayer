@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
+import com.mgtvapi.api.model.ProgressResponse
 import com.mgtvapi.api.model.WatchResponse
 import com.mgtvapi.api.service.MGTVApiRemoteService
 import com.mgtvapi.api.util.Exceptions
@@ -101,6 +102,16 @@ class MGTVApiRepositoryImpl(
         } catch (e: Exception) {
             Logger.e("updateClipProgress", e)
             throw Exceptions.UnknownErrorException(e.message)
+        }
+    }
+
+    override suspend fun getRecentlyWatched(): ProgressResponse {
+        return try {
+            apiService.getRecentlyWatched()
+        } catch (e: Exception) {
+            Logger.e("getRecentlyWatched", e)
+            throw Exceptions.UnknownErrorException(e.message)
+
         }
     }
 }

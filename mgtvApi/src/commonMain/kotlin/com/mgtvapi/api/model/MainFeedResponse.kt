@@ -2,6 +2,7 @@ package com.mgtvapi.api.model
 
 import com.mgtvapi.Parcelable
 import com.mgtvapi.Parcelize
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +19,7 @@ data class Clip(
     val canAccess: Boolean,
     val hasDownload: Boolean,
     val categoryId: Long,
-    val time: Long,
+    val time: Instant,
     val seqNr: Long,
     val hideSeqNr: Boolean,
     val title: String,
@@ -66,4 +67,6 @@ data class Participant(
     val id: String,
     val name: String,
     val img: String,
-) : Parcelable
+) : Parcelable {
+    fun getParticipantPicture(): String = "https://massengeschmack.tv/$img"
+}

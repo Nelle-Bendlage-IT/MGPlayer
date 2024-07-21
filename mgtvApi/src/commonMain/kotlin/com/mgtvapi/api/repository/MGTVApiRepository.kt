@@ -3,6 +3,7 @@ package com.mgtvapi.api.repository
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
+import com.mgtvapi.api.model.ProgressResponse
 import com.mgtvapi.api.model.WatchResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +33,6 @@ interface MGTVApiRepository {
     suspend fun getMagazine(magazineID: String, limit: Int, offset: Int): MagazineResponse
 
     suspend fun updateClipProgress(magazineID: String, progress: Int)
+
+    suspend fun getRecentlyWatched(): ProgressResponse
 }
