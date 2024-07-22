@@ -121,7 +121,7 @@ jobs:
           name: ${{ steps.semver.outputs.next }}
           body: Changelog Contents
           token: ${{ github.token }}
-          artifacts: "composeApp/build/outputs/apk/release/composeApp-release.apk,build/Apps/MGPlayer.ipa,mgplayertv/release/mgplayertv-release.apk"
+          artifacts: "composeApp/build/outputs/apk/release/composeApp-release.apk,build/Apps/MGPlayer.ipa,mgplayertv/build/outputs/apk/release/mgplayertv-release.apk"
           generateReleaseNotes: true
           tag: ${{ steps.semver.outputs.next }}
 
