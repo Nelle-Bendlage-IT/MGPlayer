@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -5,7 +7,13 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
 
 }
-
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { input ->
+        localProperties.load(input)
+    }
+}
 android {
     namespace = "com.mgplayer.tv"
     compileSdk = 34
@@ -22,13 +30,28 @@ android {
 
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("$rootDir/release/release.keystore")
+            storePassword = localProperties.getProperty("androidReleaseStorePassword")
+            keyAlias = "mgtv"
+            keyPassword = localProperties.getProperty("androidReleaseKeyPassword")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
+                // Includes the default ProGuard rules files that are packaged with
+                // the Android Gradle plugin. To learn more, go to the section about
+                // R8 configuration files.
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                // Includes a local, custom Proguard rules file
+                "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("release")
+
         }
     }
     compileOptions {
