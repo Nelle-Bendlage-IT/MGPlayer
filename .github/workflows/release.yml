@@ -55,6 +55,9 @@ jobs:
       - name: Android Build release apk
         run: ./gradlew :composeApp:assembleRelease
 
+      - name: Android TV Build release apk
+        run: ./gradlew :mgplayertv:assembleRelease
+
       - name: iOS Update Archive Version
         run: |
           /usr/libexec/Plistbuddy -c "Set CFBundleVersion ${{ steps.semver.outputs.next }}" "iosApp/iosApp/Info.plist"
@@ -117,7 +120,7 @@ jobs:
           name: ${{ steps.semver.outputs.next }}
           body: Changelog Contents
           token: ${{ github.token }}
-          artifacts: "composeApp/build/outputs/apk/release/composeApp-release.apk,build/Apps/MGPlayer.ipa"
+          artifacts: "composeApp/build/outputs/apk/release/composeApp-release.apk,build/Apps/MGPlayer.ipa,mgplayertv/release/mgplayertv-release.apk"
           generateReleaseNotes: true
           tag: ${{ steps.semver.outputs.next }}
 
