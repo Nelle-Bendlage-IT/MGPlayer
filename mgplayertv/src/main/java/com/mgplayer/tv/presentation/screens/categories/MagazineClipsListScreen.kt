@@ -18,14 +18,12 @@ package com.mgplayer.tv.presentation.screens.categories
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -36,17 +34,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.tv.material3.CardScale
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.WideClassicCard
 import com.mgplayer.tv.presentation.common.ErrorScreen
 import com.mgplayer.tv.presentation.common.Loading
-import com.mgplayer.tv.presentation.common.MovieCard
 import com.mgplayer.tv.presentation.common.PosterImage
 import com.mgplayer.tv.presentation.screens.dashboard.rememberChildPadding
-import com.mgplayer.tv.presentation.theme.JetStreamBottomListPadding
 import com.mgplayer.tv.presentation.utils.focusOnInitialVisibility
 import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Clip
@@ -55,7 +53,7 @@ import org.koin.compose.koinInject
 
 object MagazineClipsListScreen {
     const val MagazineIdBundleKey = "magazineName"
-    const val IsActiveKey="active"
+    const val IsActiveKey = "active"
 }
 
 @Composable
@@ -115,6 +113,7 @@ private fun CategoryDetails(
             style = MaterialTheme.typography.displaySmall.copy(
                 fontWeight = FontWeight.SemiBold
             ),
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding(
                 vertical = childPadding.top.times(3.5f)
             )
@@ -126,24 +125,56 @@ private fun CategoryDetails(
                     clip.id
                 }
             ) { index, clip ->
-                val img = if(isActive) clip.verticalImage() else clip.artworkUrl
-                MovieCard(
+                WideClassicCard(
+                    scale = CardScale.None,
                     onClick = { onClipSelected(clip) },
                     modifier = Modifier
-                        .aspectRatio(1 / 1.5f)
-                        .padding(8.dp)
                         .then(
                             if (index == 0)
                                 Modifier.focusOnInitialVisibility(isFirstItemVisible)
                             else Modifier
-                        ),
-                ) {
-                    PosterImage(
-                        posterURI = img,
-                        name = clip.episodeTitle,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                        )
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    image = {
+                        PosterImage(
+                            posterURI = clip.artworkUrl,
+                            name = clip.episodeTitle,
+                            modifier = Modifier
+                                .width(147.dp)
+                                .aspectRatio(16f / 9f)
+                        )
+                    },
+                    title = {
+                        Text(clip.episodeTitle, modifier = Modifier.padding(4.dp))
+                    },
+                    subtitle = {
+                        Text(
+                            if (clip.shortDescription.isNullOrEmpty()) clip.description else clip.shortDescription!!,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+
+                )
+
+
+//                MovieCard(
+//                    onClick = { onClipSelected(clip) },
+//                    modifier = Modifier
+//                        .aspectRatio(1 / 1.5f)
+//                        .padding(8.dp)
+//                        .then(
+//                            if (index == 0)
+//                                Modifier.focusOnInitialVisibility(isFirstItemVisible)
+//                            else Modifier
+//                        ),
+//                ) {
+//                    PosterImage(
+//                        posterURI = img,
+//                        name = clip.episodeTitle,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
+//                }
             }
         }
 
