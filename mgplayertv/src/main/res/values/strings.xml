@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MGPlayerTV</string>
+    <string name="generic_error_msg">Couldn\'t get %1s. Reason: %2s</string>
+    <string name="brand_logo_text">MGPlayerTV</string>
+    <string name="watch_now">Abspielen</string>
+    <string name="cast_and_crew"><![CDATA[Teilnehmer & Crew]]></string>
+    <string name="watch_trailer">Abspielen</string>
+    <string name="search_screen_et_placeholder">Search for movies, shows and more…</string>
+    <string name="last_seen">Zuletzt angesehen</string>
+    <string name="current_clips">Aktuelle Folgen</string>
+    <string name="ad">Ad</string>
+    <string name="live">Live</string>
+    <string name="message_loading">Loading…</string>
+    <string name="message_error">Wops, something went wrong…</string>
+
+</resources>

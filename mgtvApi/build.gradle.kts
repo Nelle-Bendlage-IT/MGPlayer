@@ -39,6 +39,7 @@ kotlin {
         commonMain.dependencies {
             // put your multiplatform dependencies here
             implementation(libs.kotlinx.couroutines.core)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -50,6 +51,7 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.kermit)
+            implementation(project(":shared-core"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

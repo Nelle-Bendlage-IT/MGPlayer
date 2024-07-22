@@ -15,19 +15,26 @@ compose-plugin = "1.6.11"
 junit = "4.13.2"
 kotlin = "2.0.0"
 koinVersion = "3.5.4"
-voyagerVersion = "1.1.0-beta01"
+voyagerVersion = "1.1.0-beta02"
 kotlinVersion = "2.0.0"
 kotlinXCoroutinesVersion = "1.8.1"
-ktorVersion = "2.3.11"
+ktorVersion = "2.3.12"
 kotlinXDatetimeVersion = "0.6.0"
 multiplatform-settings = "1.1.1"
-koin-compose = "1.1.2"
+koin-compose = "1.1.3"
 androidx-lifecycle = "2.8.3"
 media3_version = "1.3.1"
 kermit = "2.0.4"
-coil3 = "3.0.0-alpha06"
+coil3 = "3.0.0-alpha08"
 coil2 = "2.6.0"
 androidx-media = "1.7.0"
+composeBom = "2024.06.00"
+tvFoundation = "1.0.0-alpha11"
+tvMaterial = "1.0.0-rc01"
+lifecycleRuntimeKtx = "2.8.3"
+material3 = "1.2.1"
+navigation-compose = "2.8.0-alpha08"
+material3Android = "1.2.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -69,11 +76,22 @@ multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
-coil-android = { module = "io.coil-kt:coil", version.ref = "coil2" }
 
 coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil3" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil3" }
 coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "tvFoundation" }
+androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinVersion" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+androidx-navigation-common = { module = "org.jetbrains.androidx.navigation:navigation-common", version.ref = "navigation-compose" }
+androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -83,3 +101,9 @@ kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = 
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[bundles]
+androidx-navigation = [
+    "androidx-navigation-common",
+    "androidx-navigation-compose"
+]

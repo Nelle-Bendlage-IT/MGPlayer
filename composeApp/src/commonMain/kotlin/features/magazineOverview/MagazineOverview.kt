@@ -21,15 +21,15 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Magazine
-import com.mgtvapi.domain.ResultState
 import common.components.MGCircularProgressIndicator
 import common.screens.MagazineScreen
 
 @Composable
 fun MagazineOverview(
     fetchMagazines: () -> Unit,
-    magazines: ResultState<List<Magazine>>
+    magazines: ViewState<List<Magazine>>
 ) {
     val navigator = LocalNavigator.currentOrThrow
 
@@ -39,9 +39,9 @@ fun MagazineOverview(
 
 
     when (magazines) {
-        is ResultState.Loading, is ResultState.Empty -> MGCircularProgressIndicator()
-        is ResultState.Error -> Text(magazines.message, style = MaterialTheme.typography.bodyLarge)
-        is ResultState.Success -> {
+        is ViewState.Loading, is ViewState.Empty -> MGCircularProgressIndicator()
+        is ViewState.Error -> Text(magazines.message, style = MaterialTheme.typography.bodyLarge)
+        is ViewState.Success -> {
             LazyVerticalGrid(
                 contentPadding = PaddingValues(5.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)

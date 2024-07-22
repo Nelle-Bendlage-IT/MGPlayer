@@ -9,6 +9,8 @@ data class WatchResponse(
     val clip: Clip,
     val progress: Progress,
     val stream: Stream,
+    val next: Next? = null,
+    val participants: List<Participant> = listOf()
 )
 
 
