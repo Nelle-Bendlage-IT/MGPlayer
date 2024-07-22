@@ -50,8 +50,11 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
+import com.mgplayer.tv.data.util.StringConstants
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerControlsIcon
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMainFrame
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMediaTitle
+import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMediaTitleType
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerOverlay
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerPulse
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerPulse.Type.BACK
@@ -61,9 +64,6 @@ import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerSe
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerState
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.rememberVideoPlayerPulseState
 import com.mgplayer.tv.presentation.screens.videoPlayer.components.rememberVideoPlayerState
-import com.mgplayer.tv.data.util.StringConstants
-import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMediaTitle
-import com.mgplayer.tv.presentation.screens.videoPlayer.components.VideoPlayerMediaTitleType
 import com.mgplayer.tv.presentation.utils.handleDPadKeyEvents
 import com.mgtvapi.api.model.Clip
 import kotlinx.coroutines.delay
@@ -197,7 +197,7 @@ fun VideoPlayerControls(
         mediaTitle = {
             VideoPlayerMediaTitle(
                 title = movieDetails.title,
-                secondaryText = movieDetails.releaseDateFormatted(),
+                secondaryText = movieDetails.projectTitle,
                 type = VideoPlayerMediaTitleType.DEFAULT
             )
         },

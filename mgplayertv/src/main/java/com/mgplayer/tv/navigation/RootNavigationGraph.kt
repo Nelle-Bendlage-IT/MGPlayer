@@ -99,8 +99,9 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
 
                 ClipDetailsScreen(
                     clipId = clipId!!,
-                    goToMoviePlayer = { file ->
+                    goToMoviePlayer = { file, clip ->
                         commonViewModel.file = file
+                        commonViewModel.clip = clip
                         navController.navigate(Screens.VideoPlayer())
                     },
                     onBackPressed = {

@@ -28,8 +28,13 @@ enum class Screens(
 ) {
     Profile,
     Home(isTabItem = true),
-    Categories(isTabItem = true),
-    CategoryMovieList(listOf(MagazineClipsListScreen.MagazineIdBundleKey, MagazineClipsListScreen.IsActiveKey)),
+    Magazine(isTabItem = true),
+    CategoryMovieList(
+        listOf(
+            MagazineClipsListScreen.MagazineIdBundleKey,
+            MagazineClipsListScreen.IsActiveKey
+        )
+    ),
     MovieDetails(listOf(ClipDetailsScreen.ClipIdBundleKey)),
     Dashboard,
     VideoPlayer(listOf(VideoPlayerScreen.MovieIdBundleKey));

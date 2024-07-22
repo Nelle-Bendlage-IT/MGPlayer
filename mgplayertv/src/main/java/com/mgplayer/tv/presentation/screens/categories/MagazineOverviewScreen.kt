@@ -17,7 +17,6 @@
 package com.mgplayer.tv.presentation.screens.categories
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -37,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.onFocusChanged
@@ -140,11 +138,6 @@ private fun Catalog(
                             }
                         }
                 ) {
-                    val itemAlpha by animateFloatAsState(
-                        targetValue = if (isFocused) .6f else 0.2f,
-                        label = ""
-                    )
-
                     Box(contentAlignment = Alignment.Center) {
                         PosterImage(
                             contentScale = ContentScale.Fit,

@@ -20,26 +20,21 @@ package com.mgplayer.tv.presentation.screens.movies
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import com.mgplayer.tv.R
 import com.mgplayer.tv.presentation.common.ErrorScreen
 import com.mgplayer.tv.presentation.common.Loading
 import com.mgplayer.tv.presentation.screens.dashboard.rememberChildPadding
@@ -47,7 +42,6 @@ import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.File
 import com.mgtvapi.viewModel.CommonViewModel
-import kotlinx.datetime.LocalDate
 import org.koin.compose.koinInject
 
 object ClipDetailsScreen {
@@ -57,7 +51,7 @@ object ClipDetailsScreen {
 @Composable
 fun ClipDetailsScreen(
     clipId: String,
-    goToMoviePlayer: (File) -> Unit,
+    goToMoviePlayer: (File, Clip) -> Unit,
     onBackPressed: () -> Unit,
     commonViewModel: CommonViewModel = koinInject<CommonViewModel>()
 ) {
@@ -78,7 +72,12 @@ fun ClipDetailsScreen(
 
             Details(
                 clip = s.data.clip,
-                goToMoviePlayer = { goToMoviePlayer(s.data.stream.media.files.first()) },
+                goToMoviePlayer = {
+                    goToMoviePlayer(
+                        s.data.stream.media.files.first(),
+                        s.data.clip
+                    )
+                },
                 onBackPressed = onBackPressed,
                 modifier = Modifier
                     .fillMaxSize()
