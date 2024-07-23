@@ -1,5 +1,6 @@
 package common.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,12 +49,13 @@ fun MGTopAppBar(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(
+                Image(
                     painter = painterResource(Res.drawable.mgtvlogo),
                     contentDescription = null,
+                    alignment = Alignment.Center,
                     modifier =
                     Modifier
-                        .size(75.dp),
+                        .size(85.dp),
                 )
             }
         },

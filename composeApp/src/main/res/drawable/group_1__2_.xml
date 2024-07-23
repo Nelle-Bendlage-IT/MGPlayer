@@ -1,0 +1,54 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="330dp"
+    android:height="238dp"
+    android:viewportWidth="330"
+    android:viewportHeight="238">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M0 12c0-6.63 5.37-12 12-12h306c6.63 0 12 5.37 12 12v214c0 6.63-5.37 12-12 12h-306c-6.63 0-12-5.37-12-12z"/>
+  <path
+      android:pathData="M110.45 85l109 0.71-0.45 68L110 153z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M12 22c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M12 214c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M67 214c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M122 214c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M177 214c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M232 214c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M287 214c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M67 22c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M122 22c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M232 22c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M287 22c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:fillColor="#FFF19100"
+      android:pathData="M177 22c0-3.87 3.13-7 7-7h20c3.87 0 7 3.13 7 7v0c0 3.87-3.13 7-7 7h-20c-3.87 0-7-3.13-7-7z"/>
+  <path
+      android:strokeColor="#FFFFFFFF"
+      android:strokeWidth="1"
+      android:pathData="M128.5 84.5h74v68h-74z"/>
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M153 138.63V98.38l34.38 20.12L153 138.63Z"/>
+</vector>
