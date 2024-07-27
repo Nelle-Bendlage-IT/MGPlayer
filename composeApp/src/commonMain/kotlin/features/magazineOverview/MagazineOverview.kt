@@ -14,31 +14,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Magazine
-import com.mgtvapi.domain.ResultState
-import com.mgtvapi.viewModel.MagazineOverviewViewModel
 import common.components.MGCircularProgressIndicator
-import org.koin.compose.koinInject
 
 @Composable
 fun MagazineOverview(
     onItemClick: (String, Magazine) -> Unit,
     innerPadding: PaddingValues,
+    fetchMagazines: () -> Unit,
+    magazines: ViewState<List<Magazine>>
 ) {
-    val magazineOverviewViewModel: MagazineOverviewViewModel =
-        koinInject<MagazineOverviewViewModel>()
 
     LaunchedEffect(Unit) {
-        magazineOverviewViewModel.fetchMagazines()
+        fetchMagazines()
     }
     MagazineOverviewContent(
-        magazines = magazineOverviewViewModel.magazines.collectAsState().value,
+        magazines = magazines,
         onItemClick = onItemClick,
         innerPadding = innerPadding
     )
@@ -47,14 +44,14 @@ fun MagazineOverview(
 
 @Composable
 private fun MagazineOverviewContent(
-    magazines: ResultState<List<Magazine>>,
+    magazines: ViewState<List<Magazine>>,
     onItemClick: (String, Magazine) -> Unit,
     innerPadding: PaddingValues,
 ) {
     when (magazines) {
-        is ResultState.Loading, is ResultState.Empty -> MGCircularProgressIndicator()
-        is ResultState.Error -> Text(magazines.message, style = MaterialTheme.typography.bodyLarge)
-        is ResultState.Success -> {
+        is ViewState.Loading, is ViewState.Empty -> MGCircularProgressIndicator()
+        is ViewState.Error -> Text(magazines.message, style = MaterialTheme.typography.bodyLarge)
+        is ViewState.Success -> {
             LazyVerticalGrid(
                 modifier = Modifier.padding(innerPadding),
                 contentPadding = PaddingValues(5.dp),

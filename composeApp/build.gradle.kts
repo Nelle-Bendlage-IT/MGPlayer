@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler) // apply false
+    alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize") // add this
     id("kotlin-kapt") // add this
     kotlin("plugin.serialization") version "2.0.0"
@@ -38,7 +38,7 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
+            implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.media3.ui)
             implementation(libs.androidx.media3.common)
@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.androidx.media3.session)
         }
         commonMain.dependencies {
+            implementation(compose.components.uiToolingPreview)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.materialIconsExtended)
@@ -55,6 +56,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(project(":mgtvApi"))
+            implementation(project(":shared-core"))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.androidx.lifecycle.viewmodel)
@@ -62,7 +64,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
-            implementation(libs.androidx.navigation)
+            implementation(libs.bundles.androidx.navigation)
         }
     }
 }
@@ -124,6 +126,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     dependencies {
-        debugImplementation(libs.compose.ui.tooling)
+        debugImplementation(compose.uiTooling)
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -123,7 +124,7 @@ fun LoginContent(
         Image(
             painter = painterResource(Res.drawable.mgtvlogo),
             contentDescription = "logo",
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
+            modifier = Modifier.size(200.dp, 150.dp)
         )
 
         Spacer(modifier = Modifier.padding(16.dp))

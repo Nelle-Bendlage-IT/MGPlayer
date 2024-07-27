@@ -17,7 +17,7 @@ fun Settings(onLogOutPressed: () -> Unit, innerPadding: PaddingValues) {
 
     Column(modifier = Modifier.padding(innerPadding)) {
         Button(
-            modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+            modifier = Modifier.fillMaxWidth().padding(innerPadding),
             shape = RoundedCornerShape(30.dp),
             onClick = { onLogOutPressed() }
         ) {

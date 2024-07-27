@@ -14,6 +14,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.cookies.AcceptAllCookiesStorage
 import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
@@ -35,6 +36,7 @@ val mgtvApiSharedModule =
         }
     }
 
+@OptIn(ExperimentalSerializationApi::class)
 private fun provideHttpClient(): HttpClient {
     return HttpClient {
         install(HttpCookies) {
@@ -44,6 +46,7 @@ private fun provideHttpClient(): HttpClient {
         install(ContentNegotiation) {
             json(
                 Json {
+                    explicitNulls = false
                     ignoreUnknownKeys = true
                     useAlternativeNames = false
                 },

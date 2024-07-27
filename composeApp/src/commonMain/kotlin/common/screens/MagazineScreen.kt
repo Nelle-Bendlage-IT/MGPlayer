@@ -31,9 +31,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.Clip
 import com.mgtvapi.api.model.Magazine
-import com.mgtvapi.domain.ResultState
 import com.mgtvapi.viewModel.MagazineOverviewViewModel
 import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
@@ -103,15 +103,15 @@ fun MagazineScreen(
                 }
             }
             when (magazineEpisodes) {
-                is ResultState.Empty, ResultState.Loading -> item {
+                is ViewState.Empty, ViewState.Loading -> item {
                     MGCircularProgressIndicator()
                 }
 
-                is ResultState.Error -> item {
+                is ViewState.Error -> item {
                     Text(magazineEpisodes.message, style = MaterialTheme.typography.bodyLarge)
                 }
 
-                is ResultState.Success -> items(magazineEpisodes.data.count()) { clip ->
+                is ViewState.Success -> items(magazineEpisodes.data.count()) { clip ->
                     EpisodeListItem(
                         clip = magazineEpisodes.data[clip],
                         onClick = {

@@ -1,17 +1,14 @@
 package navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -99,7 +96,9 @@ fun HomeNavGraph(rootNavController: NavController) {
                         magazineViewModel.chosenMagazine = magazine
                         rootNavController.navigate(HomeRoute.MagazineOverview.createRoute(id))
                     },
-                    innerPadding = innerPadding
+                    innerPadding = innerPadding,
+                    fetchMagazines = { magazineViewModel.fetchMagazines() },
+                    magazines = magazineViewModel.magazines.collectAsState().value
                 )
             }
             composable(

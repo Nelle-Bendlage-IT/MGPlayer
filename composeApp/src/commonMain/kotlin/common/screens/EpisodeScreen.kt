@@ -1,10 +1,8 @@
 package common.screens
 
-import VideoPlayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,10 +27,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.mgtvapi.api.model.Clip
+import com.mgtv.shared_core.core.ViewState
 import com.mgtvapi.api.model.File
 import com.mgtvapi.api.model.WatchResponse
-import com.mgtvapi.domain.ResultState
 import common.components.DropdownMenu
 import common.components.MGCircularProgressIndicator
 import common.components.MGTopAppBar
@@ -40,7 +37,7 @@ import common.components.MGTopAppBar
 @Composable
 fun EpisodeScreen(
     getClipFiles: () -> Unit,
-    clipDataState: State<ResultState<WatchResponse>>,
+    clipDataState: State<ViewState<WatchResponse>>,
     onBackPressed: () -> Unit,
     onPlayPressed: (String) -> Unit,
     onChangeQuality: (File) -> Unit,
@@ -50,15 +47,17 @@ fun EpisodeScreen(
         getClipFiles()
     }
 
+
     Scaffold(topBar = {
         MGTopAppBar(onBackPressed = onBackPressed, showBackButton = true)
     }) {
         when (clipDataState.value) {
-            is ResultState.Error, ResultState.Loading, ResultState.Empty -> MGCircularProgressIndicator()
-            is ResultState.Success -> {
+            is ViewState.Error, ViewState.Loading, ViewState.Empty -> MGCircularProgressIndicator()
+            is ViewState.Success -> {
                 val clipData =
-                    (clipDataState.value as ResultState.Success<WatchResponse>).data
+                    (clipDataState.value as ViewState.Success<WatchResponse>).data
                 val clipFiles = clipData.stream.media.files
+                val clipFile = clipFiles.first()
 
                 LazyColumn(modifier = Modifier.padding(it)) {
                     item {
