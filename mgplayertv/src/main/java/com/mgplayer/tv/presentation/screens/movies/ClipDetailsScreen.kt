@@ -50,14 +50,15 @@ object ClipDetailsScreen {
 
 @Composable
 fun ClipDetailsScreen(
-    clipId: String,
+    clipID: String,
     goToMoviePlayer: (File, Clip) -> Unit,
     onBackPressed: () -> Unit,
     commonViewModel: CommonViewModel = koinInject<CommonViewModel>()
 ) {
     val clipData by commonViewModel.clipData.collectAsStateWithLifecycle()
-    LaunchedEffect(clipId) {
-        commonViewModel.getClipFiles(clipId)
+    LaunchedEffect(clipID) {
+        commonViewModel.clipID = clipID
+        commonViewModel.getClipFiles()
     }
     when (val s = clipData) {
         is ViewState.Loading, ViewState.Empty -> {

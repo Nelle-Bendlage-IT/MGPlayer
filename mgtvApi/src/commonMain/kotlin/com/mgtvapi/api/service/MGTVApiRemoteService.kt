@@ -1,6 +1,5 @@
 package com.mgtvapi.api.service
 
-import co.touchlab.kermit.Logger
 import com.mgtvapi.api.model.MagazineResponse
 import com.mgtvapi.api.model.MagazinesResponse
 import com.mgtvapi.api.model.MainFeedResponse
@@ -56,6 +55,7 @@ class MGTVApiRemoteService(
                     parameters.append("count", "$count")
                 }
             }
+
         return data.body<MainFeedResponse>()
     }
 
@@ -87,11 +87,10 @@ class MGTVApiRemoteService(
     }
 
     suspend fun updateClipProgress(clipID: String, time: Int) {
-        val data = client.put("$BASE_URL/api/v2/watch/$clipID/progress") {
+        client.put("$BASE_URL/api/v2/watch/$clipID/progress") {
             setBody(UpdateClipProgressRequest(percentage = time))
             this.header("Content-Type", "application/json")
         }
-        Logger.d(data.body<String>().toString(), tag = "updateClipProgress")
         //return data.status
     }
 
@@ -99,7 +98,7 @@ class MGTVApiRemoteService(
         val data = client.get("$BASE_URL/api/v2/feed/progress/recent") {
             basicAuth(username, password)
         }
-        Logger.d(data.body<String>().toString(), tag = "PROGRESS")
+
         return data.body<ProgressResponse>()
     }
 }

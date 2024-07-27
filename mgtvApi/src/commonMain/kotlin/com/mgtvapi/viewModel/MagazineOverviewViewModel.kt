@@ -21,13 +21,12 @@ class MagazineOverviewViewModel(private val repo: MGTVApiRepository) : ViewModel
     val magazineEpisodes: StateFlow<ViewState<List<Clip>>> = _magazine.asStateFlow()
     private var _isInitial = MutableStateFlow(true)
     val isInitial: StateFlow<Boolean> = _isInitial.asStateFlow()
-    private var _chosenMagazine: Magazine? = null
-    var chosenMagazine: Magazine?
+    private var _chosenMagazine: String = ""
+    var chosenMagazine: String
         get() = _chosenMagazine
         set(value) {
             _chosenMagazine = value
         }
-
     fun fetchMagazines() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -39,14 +38,13 @@ class MagazineOverviewViewModel(private val repo: MGTVApiRepository) : ViewModel
         }
     }
 
-    fun fetchMagazine(magazineID: String, magazine: Magazine, limit: Int, offset: Int) {
+    fun fetchMagazine(magazineID: String, limit: Int, offset: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val data = repo.getMagazine(magazineID, limit, offset)
-
-                if (_magazine.value is ViewState.Empty || chosenMagazine != magazine) {
+                if (_magazine.value is ViewState.Empty || _chosenMagazine != magazineID) {
                     _magazine.value = ViewState.Loading
-                    chosenMagazine = magazine
+                    _chosenMagazine = magazineID
                     _isInitial.value = false
                     _magazine.value = ViewState.Success(data = data.clips)
                     return@launch
@@ -60,9 +58,8 @@ class MagazineOverviewViewModel(private val repo: MGTVApiRepository) : ViewModel
             }
         }
     }
-
     fun onExit() {
-        _chosenMagazine = null
+        _chosenMagazine = ""
         _magazine.value = ViewState.Empty
     }
 }

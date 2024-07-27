@@ -65,6 +65,7 @@ fun MagazineClipsListScreen(
     isActive: Boolean,
 ) {
     LaunchedEffect(Unit) {
+        magazineOverviewViewModel.chosenMagazine = magazineId
         magazineOverviewViewModel.fetchMagazine(magazineId, 40, 0)
     }
     val clips by magazineOverviewViewModel.magazineEpisodes.collectAsStateWithLifecycle()

@@ -95,11 +95,12 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
                     }
                 )
             ) {
-                val clipId = it.arguments?.getString(ClipDetailsScreen.ClipIdBundleKey)
+                val clipID = it.arguments?.getString(ClipDetailsScreen.ClipIdBundleKey)
 
                 ClipDetailsScreen(
-                    clipId = clipId!!,
+                    clipID = clipID!!,
                     goToMoviePlayer = { file, clip ->
+                        commonViewModel.clipID = clipID
                         commonViewModel.file = file
                         commonViewModel.clip = clip
                         navController.navigate(Screens.VideoPlayer())
@@ -114,6 +115,7 @@ fun RootNavigationGraph(navController: NavHostController, onBackPressed: () -> U
             composable(route = Screens.Dashboard()) {
                 DashboardScreen(
                     openCategoryMovieList = { categoryId, isActive ->
+                        commonViewModel.clipID = categoryId
                         navController.navigate(
                             Screens.CategoryMovieList.withArgs(categoryId, isActive)
                         )
