@@ -1,7 +1,5 @@
 package features.home
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import com.mgtvapi.viewModel.HomeViewModel
 import com.mgtvapi.viewModel.MagazineOverviewViewModel
@@ -46,30 +43,32 @@ class HomeLayout : Screen {
                 )
             },
         ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                when (route) {
-                    HomeRoute.Home ->
-                        Home(
-                            mainFeedClipsState = homeViewModel.clips.collectAsState().value,
-                            mainFeedClipsPaginationState = homeViewModel.paginationLoading.collectAsState().value,
-                            getMainFeedClips = { offset, count ->
-                                homeViewModel.getMainFeedClips(offset, count)
-                            },
-                            getMainFeedClipsPagination = { offset ->
-                                homeViewModel.getMainFeedClipsPagination(offset)
-                            },
-                            isInitial = homeViewModel.isInitial.collectAsState().value,
-                        )
-
-                    HomeRoute.Tv -> MagazineOverview(
-                        magazines = magazineOverviewViewModel.magazines.collectAsState().value,
-                        fetchMagazines = { magazineOverviewViewModel.fetchMagazines() }
+            when (route) {
+                HomeRoute.Home ->
+                    Home(
+                        mainFeedClipsState = homeViewModel.clips.collectAsState().value,
+                        mainFeedClipsPaginationState = homeViewModel.paginationLoading.collectAsState().value,
+                        getMainFeedClips = { offset, count ->
+                            homeViewModel.getMainFeedClips(offset, count)
+                        },
+                        getMainFeedClipsPagination = { offset ->
+                            homeViewModel.getMainFeedClipsPagination(offset)
+                        },
+                        isInitial = homeViewModel.isInitial.collectAsState().value,
+                        innerPadding = innerPadding
                     )
 
-                    HomeRoute.Settings -> Settings(
-                        onLogOutPressed = { homeViewModel.logout() }
-                    )
-                }
+                HomeRoute.Tv -> MagazineOverview(
+                    magazines = magazineOverviewViewModel.magazines.collectAsState().value,
+                    fetchMagazines = { magazineOverviewViewModel.fetchMagazines() },
+                    innerPadding = innerPadding
+                )
+
+                HomeRoute.Settings -> Settings(
+                    onLogOutPressed = { homeViewModel.logout() },
+                    innerPadding = innerPadding
+                )
+
             }
         }
     }

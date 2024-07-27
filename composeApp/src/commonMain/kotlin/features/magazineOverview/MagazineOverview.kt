@@ -29,7 +29,8 @@ import common.screens.MagazineScreen
 @Composable
 fun MagazineOverview(
     fetchMagazines: () -> Unit,
-    magazines: ViewState<List<Magazine>>
+    magazines: ViewState<List<Magazine>>,
+    innerPadding: PaddingValues
 ) {
     val navigator = LocalNavigator.currentOrThrow
 
@@ -43,6 +44,7 @@ fun MagazineOverview(
         is ViewState.Error -> Text(magazines.message, style = MaterialTheme.typography.bodyLarge)
         is ViewState.Success -> {
             LazyVerticalGrid(
+                modifier = Modifier.padding(innerPadding),
                 contentPadding = PaddingValues(5.dp),
                 columns = GridCells.Adaptive(minSize = 128.dp)
             ) {
