@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     kotlin("plugin.serialization") version "2.0.0"
-    alias(libs.plugins.kotlinCocoapods)
     id("kotlin-parcelize")
 }
 
@@ -24,16 +23,6 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    cocoapods {
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        version = "1.0"
-        ios.deploymentTarget = "16.0"
-        framework {
-            baseName = "mgtvApi"
-            isStatic = true
-        }
-    }
 
     sourceSets {
         commonMain.dependencies {

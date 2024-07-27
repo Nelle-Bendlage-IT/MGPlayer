@@ -85,11 +85,9 @@ dependencies {
     implementation(libs.androidx.tv.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(project(":mgtvApi"))
-    implementation(project(":shared-core"))
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.media3.exoplayer)
@@ -109,5 +107,9 @@ dependencies {
     implementation(libs.kotlinx.couroutines.core)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.kotlinx.datetime)
+
+    // project modules
+    implementation(project(":mgtvApi"))
+    implementation(project(":shared-core"))
 
 }
